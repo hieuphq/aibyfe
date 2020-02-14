@@ -1,5 +1,10 @@
 import { StoreProtocol } from './type';
-import { AuthResponse } from 'types/app';
+import {
+  AuthResponse,
+  UpdatableListResponse,
+  UpdatableResponse,
+  TestSuite
+} from 'types/app';
 import { NewFakeStore } from './fake';
 
 export class Repo {
@@ -11,6 +16,26 @@ export class Repo {
 
   login(email: string, password: string): Promise<AuthResponse> {
     return this.store.auth.login(email, password);
+  }
+
+  signup(email: string, password: string): Promise<AuthResponse> {
+    return this.store.auth.signup(email, password);
+  }
+
+  getTestSuites(): Promise<UpdatableListResponse<TestSuite>> {
+    return this.store.testSuite.list();
+  }
+
+  getTestSuite(id: string): Promise<UpdatableResponse<TestSuite>> {
+    return this.store.testSuite.get(id);
+  }
+
+  createSuite(dt: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
+    return this.store.testSuite.create(dt);
+  }
+
+  updateSuite(dt: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
+    return this.store.testSuite.update(dt);
   }
 }
 

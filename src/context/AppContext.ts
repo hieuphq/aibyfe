@@ -7,7 +7,8 @@ function loadAppStateFromLocal(): Partial<AppRootState> {
     auth: {
       isLogin: !!localStorage.getItem('token'),
       token: localStorage.getItem('token')
-    }
+    },
+    projectId: localStorage.getItem('projectId')
   };
 }
 
@@ -19,8 +20,14 @@ function useAppState() {
     setAppState({ auth: { isLogin: !!token } });
     localStorage.setItem('token', token);
   };
+  const isLogin = (): boolean | undefined => {
+    return appState.auth?.isLogin;
+  };
+  const getProjectId = (): string | undefined | null => {
+    return appState.projectId;
+  };
 
-  return { appState, setAppState, setAuthState };
+  return { appState, isLogin, getProjectId, setAppState, setAuthState };
 }
 
 export const useAppContext = createUseContext(useAppState);

@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { RouteComponentProps, Redirect } from '@reach/router';
-// import { ROUTES } from 'constant/routes';
+import { ROUTES } from 'constant/routes';
+import { useAppContext } from 'context/AppContext';
 // import useAppIsReady from 'hooks/useAppIsReady';
 // import useSelectLocations from 'containers/SelectLocation/useSelectLocations';
 // import AppLoader from 'components/Loaders/AppLoader';
@@ -8,12 +9,13 @@ import { RouteComponentProps, Redirect } from '@reach/router';
 const AppContainer: React.FunctionComponent<RouteComponentProps> = ({
   children
 }) => {
+  const { isLogin } = useAppContext();
   // const { failedToFetch, isLoading, isLogin } = useAppIsReady();
   // const { configuredLocations } = useSelectLocations();
 
-  // if (!isLogin) {
-  //   return <Redirect to={ROUTES.LOGIN} noThrow />;
-  // }
+  if (!isLogin()) {
+    return <Redirect to={ROUTES.LOGIN} noThrow />;
+  }
 
   // if (isLoading) {
   //   return <AppLoader />;
@@ -28,9 +30,9 @@ const AppContainer: React.FunctionComponent<RouteComponentProps> = ({
   // }
 
   return (
-    <main className="font-sans pt-14">
+    <>
       <Suspense fallback={null}>{children}</Suspense>
-    </main>
+    </>
   );
 };
 

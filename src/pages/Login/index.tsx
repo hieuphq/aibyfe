@@ -3,20 +3,18 @@ import { useAppContext } from 'context/AppContext';
 import { RouteComponentProps, Redirect } from '@reach/router';
 import Layout from 'components/LoginLayout';
 import LoginForm from 'components/LoginForm';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { repo } from 'api';
 import { AuthResponse, AuthRequest } from 'types/app';
+import { ROUTES } from 'constant/routes';
 
-const LoginPage: React.FunctionComponent<RouteComponentProps> = ({
-  children
-}) => {
-  const { appState, setAuthState } = useAppContext();
-  const isLogin = appState.auth?.isLogin;
+const LoginPage: React.FunctionComponent<RouteComponentProps> = () => {
+  const { isLogin, setAuthState } = useAppContext();
   const [mutateLogin, { isLoading }] = useMutation<AuthResponse, AuthRequest>(
     req => repo.login(req.email, req.password)
   );
 
-  if (isLogin) {
+  if (isLogin()) {
     return <Redirect to="/" noThrow />;
   }
 
@@ -36,7 +34,11 @@ const LoginPage: React.FunctionComponent<RouteComponentProps> = ({
 
   return (
     <Layout>
-      <LoginForm onSubmit={onSubmit} />
+      <LoginForm
+        onSubmit={onSubmit}
+        forgotPasswordLink={ROUTES.FORGOT_PASSWORD}
+        signupLink={ROUTES.SIGNUP}
+      />
       {isLoading && <div>Loading</div>}
     </Layout>
   );

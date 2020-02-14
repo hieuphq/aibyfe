@@ -5,6 +5,8 @@ import './index.css';
 
 export interface LoginFormProps extends FormComponentProps {
   onSubmit: (values: { email: string; password: string }) => void;
+  signupLink?: string;
+  forgotPasswordLink?: string;
 }
 
 function hasErrors(fieldsError: any) {
@@ -47,7 +49,7 @@ class LoginForm extends React.Component<LoginFormProps> {
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Username"
+              placeholder="Email or Username"
             />
           )}
         </Form.Item>
@@ -70,7 +72,7 @@ class LoginForm extends React.Component<LoginFormProps> {
             valuePropName: 'checked',
             initialValue: true
           })(<Checkbox>Remember me</Checkbox>)}
-          <a className="login-form-forgot" href="">
+          <a className="login-form-forgot" href={this.props.forgotPasswordLink}>
             Forgot password
           </a>
           <Button
@@ -81,70 +83,11 @@ class LoginForm extends React.Component<LoginFormProps> {
           >
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <a href={this.props.signupLink}>register now!</a>
         </Form.Item>
       </Form>
     );
   }
-  //= ({ form }: LoginFormProps) => {
-  //   const {
-  //     getFieldDecorator,
-  //     getFieldsError,
-  //     getFieldError,
-  //     isFieldTouched
-  //   } = form;
-  //   // Only show error after a field is touched.
-  //   const usernameError = isFieldTouched('username') && getFieldError('username');
-  //   const passwordError = isFieldTouched('password') && getFieldError('password');
-  //   return (
-  //     <Form>
-  //       <Form.Item
-  //         validateStatus={usernameError ? 'error' : ''}
-  //         help={usernameError || ''}
-  //       >
-  //         {getFieldDecorator('username', {
-  //           rules: [{ required: true, message: 'Please input your username' }]
-  //         })(
-  //           <Input
-  //             prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-  //             placeholder="Username"
-  //           />
-  //         )}
-  //       </Form.Item>
-  //       <Form.Item
-  //         validateStatus={passwordError ? 'error' : ''}
-  //         help={passwordError || ''}
-  //       >
-  //         {getFieldDecorator('password', {
-  //           rules: [{ required: true, message: 'Please input your Password' }]
-  //         })(
-  //           <Input
-  //             prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-  //             type="password"
-  //             placeholder="Password"
-  //           />
-  //         )}
-  //       </Form.Item>
-  //       <Form.Item>
-  //         {getFieldDecorator('remember', {
-  //           valuePropName: 'checked',
-  //           initialValue: true
-  //         })(<Checkbox>Remember me</Checkbox>)}
-  //         <a className="login-form-forgot" href="">
-  //           Forgot password
-  //         </a>
-  //         <Button
-  //           type="primary"
-  //           htmlType="submit"
-  //           disabled={hasErrors(getFieldsError())}
-  //           className="login-form-button"
-  //         >
-  //           Log in
-  //         </Button>
-  //         Or <a href="">register now!</a>
-  //       </Form.Item>
-  //     </Form>
-  //   );
 }
 
 export default Form.create<LoginFormProps>({ name: 'Login Form' })(LoginForm);
