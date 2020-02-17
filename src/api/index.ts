@@ -22,8 +22,10 @@ export class Repo {
     return this.store.auth.signup(email, password);
   }
 
-  getTestSuites(): Promise<UpdatableListResponse<TestSuite>> {
-    return this.store.testSuite.list();
+  getTestSuites(
+    projectId?: string | null
+  ): Promise<UpdatableListResponse<TestSuite>> {
+    return this.store.testSuite.list(projectId);
   }
 
   getTestSuite(id: string): Promise<UpdatableResponse<TestSuite>> {

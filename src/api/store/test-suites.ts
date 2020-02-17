@@ -1,9 +1,16 @@
 import { IUpdatableStore } from '../type';
 import { TestSuite, UpdatableListResponse, UpdatableResponse } from 'types/app';
-import { post, put, get } from 'util/fetch';
+import { post, put, get, remove } from 'util/fetch';
 import { Endpoints } from 'constant/endpoint';
 
 export default class TestSuiteStore implements IUpdatableStore<TestSuite> {
+  delete(id: string): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      return remove<UpdatableResponse<boolean>>(
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id
+      );
+    });
+  }
   baseUrl: string;
 
   constructor(baseUrl: string) {

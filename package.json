@@ -46,9 +46,12 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.9",
+    "@types/faker": "^4.1.9",
     "@types/styled-components": "^4.4.2",
     "babel-plugin-styled-components": "^1.10.7",
     "classnames": "^2.2.6",
+    "factory.ts": "^0.5.1",
+    "faker": "^4.1.0",
     "styled-components": "^5.0.1"
   }
 }

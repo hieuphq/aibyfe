@@ -5,11 +5,15 @@ import { useQuery } from 'react-query';
 import { repo } from 'api';
 import { TestSuite } from 'types/app';
 import { ROUTES } from 'constant/routes';
+import { useAppContext } from 'context/AppContext';
 
 export interface TestSuitePageProps extends RouteComponentProps {}
 const TestSuitePage = ({}: TestSuitePageProps) => {
+  const { getProjectId } = useAppContext();
+  // TODO: will remove "1"
+  const projectId = getProjectId() || '1';
   const { data, isLoading } = useQuery('get-test-suites', () =>
-    repo.getTestSuites()
+    repo.getTestSuites(projectId)
   );
 
   // safe to assume data now exist and you can use data.
@@ -36,7 +40,6 @@ const TestSuitePage = ({}: TestSuitePageProps) => {
       title: 'Action',
       key: 'id',
       render: (itm: TestSuite) => {
-        console.log(itm.id);
         return <div>{itm.id}</div>;
       }
     }

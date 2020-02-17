@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { Card, Descriptions, Divider } from 'antd';
+import { Card, Descriptions, Divider, Table } from 'antd';
 import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestSuite } from 'types/app';
+import { TestCase } from 'types/app';
 import styled from 'styled-components';
 
 const TitleHeader = styled.div`
@@ -42,8 +42,8 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
       title: 'Action',
       dataIndex: '',
       key: '',
-      render: (text: TestSuite) => {
-        return <div>{text.id}</div>;
+      render: (text: TestCase) => {
+        return <div>{text.sort}</div>;
       }
     }
   ];
@@ -72,6 +72,10 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
         </Descriptions>
         <Divider />
         <TitleHeader>Test cases</TitleHeader>
+        <Table
+          dataSource={mutatedData?.data?.testCases}
+          columns={columns}
+        ></Table>
       </Card>
       {/* {mutatedData ? () :()} */}
       {isLoading && <h1>Loading</h1>}

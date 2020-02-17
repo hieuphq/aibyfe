@@ -1,66 +1,71 @@
 import { IUpdatableStore } from '../type';
 import { TestSuite, UpdatableListResponse, UpdatableResponse } from 'types/app';
-
-let testSuites: TestSuite[] = [
-  {
-    id: '1',
-    name: 'Regression Main feature',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: '2',
-    name: 'Smoke Test',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  },
-  {
-    id: '3',
-    name: 'UAT March 2020',
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-];
-let nextId = 3;
+import { appData } from 'generator';
 
 export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
-  list(): Promise<UpdatableListResponse<TestSuite>> {
+  list(projectId: string): Promise<UpdatableListResponse<TestSuite>> {
     return new Promise<UpdatableListResponse<TestSuite>>((resolve, reject) => {
-      resolve({ data: testSuites });
+      resolve({
+        data: appData.testSuites.list(itm => {
+          return itm.projectId === projectId;
+        })
+      });
     });
   }
   get(id: string): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
-      const itm = testSuites.find(item => item.id === id);
-      resolve({ data: itm });
+      const itm = appData.testSuites.list(itm => itm.id === id);
+      if (itm.length <= 0) {
+        reject(new Error('Not found Test suite'));
+        return;
+      }
+      resolve({ data: this.preload(itm[0]) });
     });
+  }
+  preload(dt: TestSuite): TestSuite {
+    const tcIds = appData.testSuiteConnection
+      .list(itm => itm.testSuiteId === dt.id)
+      .map(itm => itm.testCaseId);
+    dt.testCases = appData.testCases.list(itm => tcIds.indexOf(itm.id) >= 0);
+    return dt;
   }
   create(data: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
-      nextId = nextId++;
-      const newItm = {
-        id: nextId.toString(),
+      const itm: TestSuite = {
+        id: '',
         name: data.name || '',
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      testSuites = [...testSuites, newItm];
+      const newItm = appData.testSuites.add(itm);
+      if (newItm) {
+        reject(new Error('unable to create test suite'));
+      }
       resolve({ data: newItm });
     });
   }
   update(data: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
-      const idx = testSuites.findIndex(item => item.id === data.id);
+      const updated = appData.testSuites.update(data, (old: TestSuite) => {
+        return old.id === data.id;
+      });
 
-      if (idx < 0) {
+      if (!updated) {
         reject(new Error('Not found'));
         return;
       }
 
-      const itm = testSuites[idx];
-      const newItm = Object.assign({}, itm, data);
-      testSuites[idx] = newItm;
-      resolve({ data: newItm });
+      resolve({ data: updated });
+    });
+  }
+  delete(id: string): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      if (!appData.testSuites.remove(id)) {
+        reject(new Error('unable to remove Test suite'));
+        return;
+      }
+
+      resolve({ data: true });
     });
   }
 }

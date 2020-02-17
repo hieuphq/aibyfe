@@ -34,3 +34,10 @@ export async function put<T>(
 ): Promise<HttpResponse<T>> {
   return await http<T>(new Request(path, args));
 }
+
+export async function remove<T>(
+  path: string,
+  args: RequestInit = { method: 'delete' }
+): Promise<HttpResponse<T>> {
+  return await http<T>(new Request(path, args));
+}

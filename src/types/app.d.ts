@@ -31,9 +31,16 @@ export interface SignUpResponse {
   error: string | null;
 }
 
+export interface Project {
+  id: string;
+  name: string;
+  createdAt: date;
+  updatedAt: date;
+}
 export interface TestSuite {
   id: string;
   name: string;
+  projectId?: string;
   createdAt: date;
   updatedAt: date;
   testCases?: TestCase[];
@@ -41,7 +48,6 @@ export interface TestSuite {
 
 export interface TestCase {
   id: string;
-  testSuiteId: string;
   name: string;
   sort: number;
   createdAt: date;
@@ -54,6 +60,12 @@ export interface UpdatableListResponse<T> {
 }
 
 export interface UpdatableResponse<T> {
-  data?: T;
+  data?: T | null;
   error?: string | null;
+}
+
+interface TestSuiteTestCaseConnect {
+  id: string;
+  testCaseId: string;
+  testSuiteId: string;
 }
