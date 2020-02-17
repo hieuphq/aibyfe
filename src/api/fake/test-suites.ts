@@ -68,4 +68,21 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
       resolve({ data: true });
     });
   }
+
+  removeTestCase(
+    id: string,
+    testCaseId: string
+  ): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      const existed = appData.testSuiteConnection.list(
+        itm => itm.testSuiteId === id && itm.testCaseId === testCaseId
+      );
+      for (let idx = 0; idx < existed.length; idx++) {
+        const itm = existed[idx];
+        appData.testSuiteConnection.remove(itm.id);
+      }
+
+      resolve({ data: true });
+    });
+  }
 }

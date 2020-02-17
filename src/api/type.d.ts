@@ -2,7 +2,8 @@ import {
   AuthResponse,
   UpdatableListResponse,
   UpdatableResponse,
-  TestSuite
+  TestSuite,
+  TestCase
 } from 'types/app';
 export interface IAuthStore {
   login(email: string, password: string): Promise<AuthResponse>;
@@ -19,5 +20,11 @@ export interface IUpdatableStore<T> {
 
 export interface StoreProtocol {
   auth: IAuthStore;
-  testSuite: IUpdatableStore<TestSuite>;
+  testSuite: IUpdatableStore<TestSuite> & {
+    removeTestCase(
+      id: string,
+      testCaseId: string
+    ): Promise<UpdatableResponse<boolean>>;
+  };
+  testCase: IUpdatableStore<TestCase> & {};
 }

@@ -4,23 +4,16 @@ import { post, put, get, remove } from 'util/fetch';
 import { Endpoints } from 'constant/endpoint';
 
 export default class TestSuiteStore implements IUpdatableStore<TestSuite> {
-  delete(id: string): Promise<UpdatableResponse<boolean>> {
-    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
-      return remove<UpdatableResponse<boolean>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + id
-      );
-    });
-  }
   baseUrl: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
 
-  list(): Promise<UpdatableListResponse<TestSuite>> {
+  list(projectId: string): Promise<UpdatableListResponse<TestSuite>> {
     return new Promise<UpdatableListResponse<TestSuite>>((resolve, reject) => {
       return get<UpdatableListResponse<TestSuite>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/'
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + projectId
       );
     });
   }
@@ -47,6 +40,25 @@ export default class TestSuiteStore implements IUpdatableStore<TestSuite> {
       return put<UpdatableResponse<TestSuite>>(
         this.baseUrl + Endpoints.TEST_SUITE + '/' + data.id?.toString(),
         JSON.stringify({ ...data })
+      );
+    });
+  }
+
+  delete(id: string): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      return remove<UpdatableResponse<boolean>>(
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id
+      );
+    });
+  }
+
+  removeTestCase(
+    id: string,
+    testCaseId: string
+  ): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      return remove<UpdatableResponse<boolean>>(
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id + '/' + testCaseId
       );
     });
   }

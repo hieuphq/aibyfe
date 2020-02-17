@@ -7,13 +7,11 @@ import Layout from 'components/LoginLayout';
 export interface SelectProjectProps extends RouteComponentProps {}
 
 const SelectProjectPage: React.FC<SelectProjectProps> = () => {
-  console.log('HP was here');
   const { getProjectId } = useAppContext();
   const currPId = getProjectId();
   if (!!currPId) {
     return <Redirect to={ROUTES.HOME} noThrow />;
   }
-  console.log('HP was here 2');
 
   return (
     <Layout>

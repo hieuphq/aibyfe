@@ -54,6 +54,11 @@ export interface TestCase {
   updatedAt: date;
 }
 
+export interface TestCaseForTestSuite {
+  testcases: TestCase[];
+  selectedTestcases: TestCase[];
+}
+
 export interface UpdatableListResponse<T> {
   data?: T[];
   error?: string | null;

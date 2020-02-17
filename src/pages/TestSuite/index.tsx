@@ -40,7 +40,13 @@ const TestSuitePage = ({}: TestSuitePageProps) => {
       title: 'Action',
       key: 'id',
       render: (itm: TestSuite) => {
-        return <div>{itm.id}</div>;
+        return (
+          <div>
+            <Button type="link" block>
+              Delete
+            </Button>
+          </div>
+        );
       }
     }
   ];

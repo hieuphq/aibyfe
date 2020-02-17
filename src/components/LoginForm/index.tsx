@@ -10,7 +10,6 @@ export interface LoginFormProps extends FormComponentProps {
 }
 
 function hasErrors(fieldsError: any) {
-  console.log(Object.keys(fieldsError).some(field => fieldsError[field]));
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
