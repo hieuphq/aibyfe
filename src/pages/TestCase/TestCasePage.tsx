@@ -3,27 +3,27 @@ import { RouteComponentProps, navigate, Link } from '@reach/router';
 import { Table, Button } from 'antd';
 import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestSuite } from 'types/app';
+import { TestCase } from 'types/app';
 import { ROUTES } from 'constant/routes';
 import { useAppContext } from 'context/AppContext';
 
-type TestSuiteView = TestSuite & { key: number };
+type TestCaseView = TestCase & { key: number };
 
-export interface TestSuitePageProps extends RouteComponentProps {}
-const TestSuitePage = () => {
+export interface TestCasePageProps extends RouteComponentProps {}
+export const TestCasePage = () => {
   const { getProjectId } = useAppContext();
   const projectId = getProjectId() || '';
-  const { data, isLoading } = useQuery('get-test-suites', () =>
-    repo.getTestSuites(projectId)
+  const { data, isLoading } = useQuery('get-test-cases', () =>
+    repo.getTestCases(projectId)
   );
 
-  const [testSuites, setTestSuites] = useState<TestSuiteView[]>([]);
+  const [TestCases, setTestCases] = useState<TestCaseView[]>([]);
   useEffect(() => {
     const ts = data?.data || [];
-    const testSuites = ts.map((itm, index) => {
+    const TestCases = ts.map((itm, index) => {
       return { ...itm, key: index };
     });
-    setTestSuites(testSuites);
+    setTestCases(TestCases);
   }, [data]);
 
   const columns = [
@@ -36,14 +36,14 @@ const TestSuitePage = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (name: string, { id }: TestSuite) => (
-        <Link to={ROUTES.TESTSUITE + '/' + id.toString()}>{name}</Link>
+      render: (name: string, { id }: TestCase) => (
+        <Link to={ROUTES.TESTCASE + '/' + id.toString()}>{name}</Link>
       )
     },
     {
       title: 'Action',
       key: 'action',
-      render: (itm: TestSuite) => {
+      render: (itm: TestCase) => {
         return (
           <div>
             <Button type="link" block>
@@ -56,20 +56,18 @@ const TestSuitePage = () => {
   ];
 
   const addButtonOnClick = (e: any): void => {
-    navigate(ROUTES.TESTSUITE_NEW);
+    navigate(ROUTES.TESTCASE_NEW);
   };
 
   return (
     <>
-      <h1>TestSuitePage</h1>
+      <h1>TestCasePage</h1>
       <Button type="primary" icon="plus" onClick={addButtonOnClick}>
         Add
       </Button>
-      <Table dataSource={testSuites} columns={columns}></Table>
+      <Table dataSource={TestCases} columns={columns}></Table>
       {/* {mutatedData ? () :()} */}
       {isLoading && <h1>Loading</h1>}
     </>
   );
 };
-
-export default TestSuitePage;

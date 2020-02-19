@@ -10,55 +10,91 @@ export default class TestSuiteStore implements IUpdatableStore<TestSuite> {
     this.baseUrl = baseUrl;
   }
 
-  list(projectId: string): Promise<UpdatableListResponse<TestSuite>> {
+  list(
+    projectId: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableListResponse<TestSuite>> {
     return new Promise<UpdatableListResponse<TestSuite>>((resolve, reject) => {
       return get<UpdatableListResponse<TestSuite>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + projectId
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + projectId,
+        headers
       );
     });
   }
 
-  get(id: string): Promise<UpdatableResponse<TestSuite>> {
+  get(
+    id: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
       return get<UpdatableResponse<TestSuite>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + id
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id,
+        headers
       );
     });
   }
 
-  create(data: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
+  create(
+    data: Partial<TestSuite>,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
       return post<UpdatableResponse<TestSuite>>(
         this.baseUrl + Endpoints.TEST_SUITE,
-        JSON.stringify({ ...data })
+        JSON.stringify({ ...data }),
+        headers
       );
     });
   }
 
-  update(data: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
+  update(
+    data: Partial<TestSuite>,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
       return put<UpdatableResponse<TestSuite>>(
         this.baseUrl + Endpoints.TEST_SUITE + '/' + data.id?.toString(),
-        JSON.stringify({ ...data })
+        JSON.stringify({ ...data }),
+        headers
       );
     });
   }
 
-  delete(id: string): Promise<UpdatableResponse<boolean>> {
+  delete(
+    id: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
       return remove<UpdatableResponse<boolean>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + id
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id,
+        headers
       );
     });
   }
 
   removeTestCase(
     id: string,
-    testCaseId: string
+    testCaseId: string,
+    headers?: HeadersInit
   ): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
       return remove<UpdatableResponse<boolean>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + id + '/' + testCaseId
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id + '/' + testCaseId,
+        headers
+      );
+    });
+  }
+
+  addTestCase(
+    id: string,
+    testCaseId: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      return post<UpdatableResponse<boolean>>(
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + id + '/' + testCaseId,
+        JSON.stringify({ testSuiteId: id, testCaseId }),
+        headers
       );
     });
   }

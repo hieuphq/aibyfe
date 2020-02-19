@@ -16,11 +16,16 @@ export default class Auth implements IAuthStore {
       );
     });
   }
-  signup(email: string, password: string): Promise<AuthResponse> {
+  signup(
+    email: string,
+    password: string,
+    headers?: HeadersInit
+  ): Promise<AuthResponse> {
     return new Promise<AuthResponse>((resolve, reject) => {
       return post<AuthResponse>(
         this.baseUrl + Endpoints.SIGNUP,
-        JSON.stringify({ email, password })
+        JSON.stringify({ email, password }),
+        headers
       );
     });
   }

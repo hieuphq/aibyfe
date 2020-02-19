@@ -1,13 +1,32 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps, Redirect } from '@reach/router';
+import React, { useEffect, useState, useMemo } from 'react';
+import { RouteComponentProps, Redirect, navigate } from '@reach/router';
 import { useAppContext } from 'context/AppContext';
 import { ROUTES } from 'constant/routes';
 import Layout from 'components/LoginLayout';
+import { Card, Select, Button, Divider, Row, Icon, message } from 'antd';
+import { repo } from 'api';
+import { useQuery } from 'react-query';
+import { Project } from 'types/app';
+
+const { Option } = Select;
 
 export interface SelectProjectProps extends RouteComponentProps {}
 
 const SelectProjectPage: React.FC<SelectProjectProps> = () => {
-  const { getProjectId } = useAppContext();
+  const { data, isLoading } = useQuery('get-projects', () =>
+    repo.getProjects()
+  );
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedPId, setSelectedPId] = useState<string>('');
+  useEffect(() => {
+    const dt = data?.data || [];
+    setProjects([...dt]);
+  }, [data, isLoading]);
+
+  const { isLogin, getProjectId, setProjectId } = useAppContext();
+  if (!isLogin()) {
+    return <Redirect to={ROUTES.LOGIN} noThrow />;
+  }
   const currPId = getProjectId();
   if (!!currPId) {
     return <Redirect to={ROUTES.HOME} noThrow />;
@@ -15,7 +34,48 @@ const SelectProjectPage: React.FC<SelectProjectProps> = () => {
 
   return (
     <Layout>
-      <h1>select</h1>
+      <Card
+        title="Select a Project"
+        bordered={true}
+        actions={[
+          <Icon
+            type="check"
+            onClick={() => {
+              if (selectedPId === '') {
+                message.warning('Please choose a project in list');
+                return;
+              }
+              message.info('Selected project ' + selectedPId);
+              setProjectId(selectedPId);
+              setTimeout(() => {
+                navigate(ROUTES.HOME);
+              }, 2000);
+            }}
+          />
+        ]}
+      >
+        <Select
+          showSearch
+          style={{ width: '100%' }}
+          placeholder="Project list"
+          loading={isLoading}
+          filterOption={(input, option) => {
+            const val = option.props.children as string;
+            return val.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+          }}
+          onChange={e => {
+            setSelectedPId(e.toString());
+          }}
+        >
+          {projects.map(itm => {
+            return (
+              <Option key={itm.id} value={itm.id}>
+                {itm.name}
+              </Option>
+            );
+          })}
+        </Select>
+      </Card>
     </Layout>
   );
 };

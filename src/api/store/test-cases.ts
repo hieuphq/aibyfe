@@ -10,44 +10,73 @@ export default class TestCaseStore implements IUpdatableStore<TestCase> {
     this.baseUrl = baseUrl;
   }
 
-  list(testSuiteId: string): Promise<UpdatableListResponse<TestCase>> {
+  listInTestsuite(
+    testSuiteId: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableListResponse<TestCase>> {
     return new Promise<UpdatableListResponse<TestCase>>((resolve, reject) => {
       return get<UpdatableListResponse<TestCase>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + testSuiteId + '/test-cases'
+        this.baseUrl + Endpoints.TEST_SUITE + '/' + testSuiteId + '/test-cases',
+        headers
       );
     });
   }
 
-  get(id: string): Promise<UpdatableResponse<TestCase>> {
+  list(
+    projectId: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableListResponse<TestCase>> {
+    return new Promise<UpdatableListResponse<TestCase>>((resolve, reject) => {
+      return get<UpdatableListResponse<TestCase>>(
+        this.baseUrl + Endpoints.PROJECT + '/' + projectId + '/test-cases',
+        headers
+      );
+    });
+  }
+
+  get(id: string, headers?: HeadersInit): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
       return get<UpdatableResponse<TestCase>>(
-        this.baseUrl + Endpoints.TEST_CASE + '/' + id
+        this.baseUrl + Endpoints.TEST_CASE + '/' + id,
+        headers
       );
     });
   }
 
-  create(data: Partial<TestCase>): Promise<UpdatableResponse<TestCase>> {
+  create(
+    data: Partial<TestCase>,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
       return post<UpdatableResponse<TestCase>>(
         this.baseUrl + Endpoints.TEST_CASE,
-        JSON.stringify({ ...data })
+        JSON.stringify({ ...data }),
+        headers
       );
     });
   }
 
-  update(data: Partial<TestCase>): Promise<UpdatableResponse<TestCase>> {
+  update(
+    data: Partial<TestCase>,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
       return put<UpdatableResponse<TestCase>>(
         this.baseUrl + Endpoints.TEST_CASE + '/' + data.id,
-        JSON.stringify({ ...data })
+        JSON.stringify({ ...data }),
+        headers
       );
     });
   }
 
-  delete(id: string): Promise<UpdatableResponse<boolean>> {
+  delete(
+    id: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
       return remove<UpdatableResponse<boolean>>(
-        this.baseUrl + Endpoints.TEST_CASE + '/' + id
+        this.baseUrl + Endpoints.TEST_CASE + '/' + id,
+        headers
       );
     });
   }

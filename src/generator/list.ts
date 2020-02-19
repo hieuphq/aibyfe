@@ -32,7 +32,7 @@ export class List<T extends IEntity> {
   }
 
   genNextID(): string {
-    this.nextID = this.nextID++;
+    this.nextID = this.nextID + 1;
     return this.nextID.toString();
   }
 
@@ -52,6 +52,18 @@ export class List<T extends IEntity> {
 
   list(cond?: (item: T) => boolean): T[] {
     return cond ? this.data.filter(itm => cond(itm)) : this.data;
+  }
+
+  getById(id: string): T | null {
+    if (id === '') {
+      return null;
+    }
+
+    if (this.data.length <= 0) {
+      return null;
+    }
+
+    return this.data.find(itm => itm.id === id) || null;
   }
 
   update(updateData: Partial<T>, compareFn: (itm: T) => boolean): T | null {

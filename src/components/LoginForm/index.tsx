@@ -48,7 +48,7 @@ class LoginForm extends React.Component<LoginFormProps> {
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Email or Username"
+              placeholder="Email or Username(admin)"
             />
           )}
         </Form.Item>

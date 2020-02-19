@@ -29,7 +29,6 @@ const SignUpPage: React.FunctionComponent<RouteComponentProps> = ({
       };
       const res = await mutateSignup(req);
       setAuthState(res.data.token);
-      console.log(res);
     } catch (err) {
       console.error(err);
     }

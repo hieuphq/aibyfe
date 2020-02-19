@@ -16,8 +16,8 @@ export const ROUTES = {
   PAGE_DETAIL: '/project/pages/:pageId',
   PAGE_DETAIL_EDIT: '/project/pages/:pageId/edit',
   PROJECT: '/project',
-  ENVIRONMENT: '/environments',
-  TEST_RESULT: '/tests-result',
+  ENVIRONMENT: '/project/environments',
+  TEST_RESULT: '/project/tests-result',
 
   HOME: '/',
   NO_AUTHEN: '/403',

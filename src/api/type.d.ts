@@ -7,15 +7,29 @@ import {
 } from 'types/app';
 export interface IAuthStore {
   login(email: string, password: string): Promise<AuthResponse>;
-  signup(email: string, password: string): Promise<AuthResponse>;
+
+  signup(
+    email: string,
+    password: string,
+    headers: HeadersInit
+  ): Promise<AuthResponse>;
 }
 
 export interface IUpdatableStore<T> {
-  list(queryData?: any): Promise<UpdatableListResponse<T>>;
-  get(id: string): Promise<UpdatableResponse<T>>;
-  create(data: Partial<T>): Promise<UpdatableResponse<T>>;
-  update(data: Partial<T>): Promise<UpdatableResponse<T>>;
-  delete(id: string): Promise<UpdatableResponse<boolean>>;
+  list(
+    queryData?: any,
+    headers?: HeadersInit
+  ): Promise<UpdatableListResponse<T>>;
+  get(id: string, headers?: HeadersInit): Promise<UpdatableResponse<T>>;
+  create(data: any, headers?: HeadersInit): Promise<UpdatableResponse<T>>;
+  update(
+    data: Partial<T>,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<T>>;
+  delete(
+    id: string,
+    headers?: HeadersInit
+  ): Promise<UpdatableResponse<boolean>>;
 }
 
 export interface StoreProtocol {
@@ -23,8 +37,20 @@ export interface StoreProtocol {
   testSuite: IUpdatableStore<TestSuite> & {
     removeTestCase(
       id: string,
-      testCaseId: string
+      testCaseId: string,
+      headers?: HeadersInit
+    ): Promise<UpdatableResponse<boolean>>;
+    addTestCase(
+      id: string,
+      testCaseId: string,
+      headers?: HeadersInit
     ): Promise<UpdatableResponse<boolean>>;
   };
-  testCase: IUpdatableStore<TestCase> & {};
+  testCase: IUpdatableStore<TestCase> & {
+    listInTestsuite(
+      testSuiteId: string,
+      headers?: HeadersInit
+    ): Promise<UpdatableListResponse<TestCase>>;
+  };
+  projects: IUpdatableStore<Project> & {};
 }

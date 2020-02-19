@@ -2,22 +2,25 @@ import {
   Project,
   TestSuite,
   TestCase,
-  TestSuiteTestCaseConnect
+  TestSuiteTestCaseConnect,
+  User,
+  UserProject
 } from 'types/app';
 import faker from 'faker';
 import * as Factory from 'factory.ts';
 
-const idGenerator = new Factory.Sync.Generator<string>((seq: number) => {
-  return (seq + 1).toString();
-});
+const idGenerator = (startIndex?: number) =>
+  new Factory.Sync.Generator<string>((seq: number) => {
+    return ((startIndex || 0) + seq + 1).toString();
+  });
 
 const sortGenerator = new Factory.Sync.Generator<number>((seq: number) => {
   return seq + 1;
 });
 
-const idWithMaxGenerator = (max: number) => {
+const idWithMaxGenerator = (min: number, max: number) => {
   return generate<string>(seq =>
-    faker.random.number({ min: 1, max: max }).toString()
+    faker.random.number({ min: min, max: max }).toString()
   );
 };
 
@@ -25,13 +28,30 @@ function generate<T>(cond: (seq: number) => T): Factory.Sync.Generator<T> {
   return Factory.each<T>(seq => cond(seq));
 }
 
+export function randomNumber(min: number, max: number): number {
+  return faker.random.number({ min, max });
+}
+
 /*
  * Factory
  */
 
-export const projectsFactory = () => {
+export const usersFactory = () => {
+  return Factory.Sync.makeFactory<User>({
+    id: idGenerator(),
+    username: generate<string>(seq => {
+      return faker.internet.userName();
+    }),
+    email: generate<string>(seq => {
+      return faker.internet.email();
+    })
+  });
+};
+
+export const projectsFactory = (maxOfUser: number) => {
   return Factory.Sync.makeFactory<Project>({
-    id: idGenerator,
+    id: idGenerator(),
+    ownerId: idWithMaxGenerator(1, maxOfUser),
     name: generate<string>(seq => {
       return faker.lorem.sentence(3, 10);
     }),
@@ -44,10 +64,21 @@ export const projectsFactory = () => {
   });
 };
 
-export const testSuiteFactory = (maxID: number) => {
+export const userProjectConnFactory = (
+  projectCount: number,
+  userCount: number
+) => {
+  return Factory.Sync.makeFactory<UserProject>({
+    id: idGenerator(),
+    projectId: idWithMaxGenerator(1, projectCount),
+    userId: idWithMaxGenerator(1, userCount)
+  });
+};
+
+export const testSuiteFactory = (startIdx: number, projectId: string) => {
   return Factory.Sync.makeFactory<TestSuite>({
-    id: idGenerator,
-    projectId: idWithMaxGenerator(maxID),
+    id: idGenerator(startIdx),
+    projectId: projectId,
     name: generate<string>(seq => {
       return faker.lorem.sentence(3, 5);
     }),
@@ -60,13 +91,14 @@ export const testSuiteFactory = (maxID: number) => {
   });
 };
 
-export const testCaseFactory = (maxID: number) => {
+export const testCaseFactory = (startIdx: number, projectId: string) => {
   return Factory.Sync.makeFactory<TestCase>({
-    id: idGenerator,
+    id: idGenerator(startIdx),
     sort: sortGenerator,
     name: generate<string>(seq => {
-      return faker.lorem.sentence(5, 10);
+      return 'TC-' + faker.lorem.sentence(5, 10);
     }),
+    projectId,
     createdAt: generate<Date>(seq => {
       return faker.date.past();
     }),
@@ -77,12 +109,21 @@ export const testCaseFactory = (maxID: number) => {
 };
 
 export const testSuiteConnFactory = (
+  startIdx: number,
+  testSuiteStart: number,
   testSuiteCount: number,
+  testCaseStart: number,
   testCaseCount: number
 ) => {
   return Factory.Sync.makeFactory<TestSuiteTestCaseConnect>({
-    id: idGenerator,
-    testSuiteId: idWithMaxGenerator(testSuiteCount),
-    testCaseId: idWithMaxGenerator(testCaseCount)
+    id: idGenerator(startIdx),
+    testSuiteId: idWithMaxGenerator(
+      testSuiteStart + 1,
+      testSuiteStart + testSuiteCount
+    ),
+    testCaseId: idWithMaxGenerator(
+      testCaseStart + 1,
+      testCaseStart + testCaseCount
+    )
   });
 };

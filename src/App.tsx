@@ -14,7 +14,7 @@ import SelectProject from 'pages/SelectProject';
 import HomePage from 'pages/Home';
 import Project from 'pages/Project';
 import TestSuitePage from 'pages/TestSuite';
-import TestCasePage from 'pages/TestCase';
+import { TestCasePage } from 'pages/TestCase';
 import UIPage from 'pages/UI';
 import Environment from 'pages/Environment';
 import TestResult from 'pages/TestResult';
@@ -31,12 +31,12 @@ const App = () => {
           path={ROUTES.FORGOT_PASSWORD}
           Component={ForgotPasswordPage}
         />
+        <ComponentRoute
+          path={ROUTES.SELECT_PROJECT}
+          Component={SelectProject}
+        />
         <HomePage path={ROUTES.HOME}>
           <ComponentRoute path={ROUTES.HOME} Component={Project} />
-          <ComponentRoute
-            path={ROUTES.SELECT_PROJECT}
-            Component={SelectProject}
-          />
           <ComponentRoute path={ROUTES.TESTSUITE} Component={TestSuitePage} />
           <ComponentRoute
             path={ROUTES.TESTSUITE_NEW}

@@ -31,9 +31,22 @@ export interface SignUpResponse {
   error: string | null;
 }
 
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+}
+
+export interface UserProject {
+  id: string;
+  userId: string;
+  projectId: string;
+}
+
 export interface Project {
   id: string;
   name: string;
+  ownerId: string;
   createdAt: date;
   updatedAt: date;
 }
@@ -46,10 +59,17 @@ export interface TestSuite {
   testCases?: TestCase[];
 }
 
+export interface CreateTestSuite {
+  projectId: string;
+  name: string;
+  testCases?: string[];
+}
+
 export interface TestCase {
   id: string;
   name: string;
   sort: number;
+  projectId: string;
   createdAt: date;
   updatedAt: date;
 }

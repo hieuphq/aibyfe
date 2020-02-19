@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { RouteComponentProps, navigate } from '@reach/router';
+import { RouteComponentProps, navigate, Redirect } from '@reach/router';
 import { useAppContext } from 'context/AppContext';
 import { ROUTES } from 'constant/routes';
 import Layout from 'components/Layout';
@@ -50,13 +50,17 @@ const HomePage: React.FC<HomePageProps> = ({ children, location }) => {
   const projectId = getProjectId();
   const isLoggedIn = isLogin();
 
-  //   if (isLoggedIn && !projectId) {
-  //     return <Redirect to={ROUTES.SELECT_PROJECT} noThrow />;
-  //   }
+  if (!isLoggedIn) {
+    return <Redirect to={ROUTES.LOGIN} noThrow />;
+  }
 
-  //   if (isLogin && projectId) {
-  //     return <Redirect to={ROUTES.PROJECT} noThrow />;
-  //   }
+  if (isLoggedIn && !projectId) {
+    return <Redirect to={ROUTES.SELECT_PROJECT} noThrow />;
+  }
+
+  // if (isLogin && projectId) {
+  //   return <Redirect to={ROUTES.TESTSUITE} noThrow />;
+  // }
 
   return (
     <Layout

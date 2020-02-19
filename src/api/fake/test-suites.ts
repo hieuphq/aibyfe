@@ -1,5 +1,11 @@
 import { IUpdatableStore } from '../type';
-import { TestSuite, UpdatableListResponse, UpdatableResponse } from 'types/app';
+import {
+  TestSuite,
+  UpdatableListResponse,
+  UpdatableResponse,
+  CreateTestSuite,
+  TestCase
+} from 'types/app';
 import { appData } from 'generator';
 
 export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
@@ -29,17 +35,41 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
     dt.testCases = appData.testCases.list(itm => tcIds.indexOf(itm.id) >= 0);
     return dt;
   }
-  create(data: Partial<TestSuite>): Promise<UpdatableResponse<TestSuite>> {
+  create(data: CreateTestSuite): Promise<UpdatableResponse<TestSuite>> {
     return new Promise<UpdatableResponse<TestSuite>>((resolve, reject) => {
       const itm: TestSuite = {
         id: '',
         name: data.name || '',
+        projectId: data.projectId,
         createdAt: new Date(),
         updatedAt: new Date()
       };
       const newItm = appData.testSuites.add(itm);
-      if (newItm) {
+      if (!newItm) {
         reject(new Error('unable to create test suite'));
+        return;
+      }
+
+      const nItm = (newItm as unknown) as TestSuite;
+      const tcs = data.testCases || [];
+      const testSuiteId = nItm.id || '';
+      let tcData: TestCase[] = [];
+      for (let idx = 0; idx < tcs.length; idx++) {
+        const testCaseId = tcs[idx];
+        const tc = appData.testCases.getById(testCaseId);
+        if (!tc) {
+          continue;
+        }
+
+        const cs = appData.testSuiteConnection.list(
+          itm =>
+            itm.testCaseId === testCaseId && itm.testSuiteId === testSuiteId
+        );
+        if (cs.length > 0) {
+          continue;
+        }
+        appData.testSuiteConnection.add({ id: '', testSuiteId, testCaseId });
+        tcData.push(tc);
       }
       resolve({ data: newItm });
     });
@@ -81,6 +111,22 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
         const itm = existed[idx];
         appData.testSuiteConnection.remove(itm.id);
       }
+
+      resolve({ data: true });
+    });
+  }
+
+  addTestCase(
+    testSuiteId: string,
+    testCaseId: string
+  ): Promise<UpdatableResponse<boolean>> {
+    return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
+      const ts = appData.testSuites.list(itm => itm.id === testSuiteId);
+      if (ts.length <= 0) {
+        reject(new Error('invalid test suite'));
+        return;
+      }
+      appData.testSuiteConnection.add({ id: '', testCaseId, testSuiteId });
 
       resolve({ data: true });
     });

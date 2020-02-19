@@ -9,25 +9,39 @@ const { Search } = Input;
 export interface AddTestCaseProps {
   testSuiteId: string;
   visible?: boolean;
+  testCases: TestCase[] | null;
+  selectedTestCaseIds: string[] | null;
   onOk: (data: { willSelect: string[]; selected: string[] }) => void;
   onCancel: () => void;
 }
 
 type TestCaseView = TestCase & {
   state: 'normal' | 'selected' | 'selecting';
+  key: number;
 };
 
 export const AddTestCase = ({
   testSuiteId,
   visible,
   onOk,
-  onCancel
+  onCancel,
+  testCases,
+  selectedTestCaseIds
 }: AddTestCaseProps) => {
-  const { data } = useQuery('get-test-cases', () =>
-    repo.getTestCasesForAddingFlow(testSuiteId)
-  );
+  const [tcView, setTcView] = useState<TestCaseView[]>([]);
+  useEffect(() => {
+    const tcs = testCases || [];
+    const stcIds = selectedTestCaseIds || [];
+    const tcvs: TestCaseView[] = tcs.map((itm, index) => {
+      return {
+        ...itm,
+        state: stcIds.indexOf(itm.id) < 0 ? 'normal' : 'selected',
+        key: index
+      };
+    });
+    setTcView(tcvs);
+  }, [testCases, selectedTestCaseIds]);
 
-  const [testCases, setTestCases] = useState<TestCaseView[]>([]);
   const [filterStr, setFilterStr] = useState<string>('');
 
   // // safe to assume data now exist and you can use data.
@@ -36,32 +50,19 @@ export const AddTestCase = ({
   //   return data;
   // }, [data]);
 
-  useEffect(() => {
-    const tcs = data?.data?.testcases || [];
-    const stcs = data?.data?.selectedTestcases || [];
-    const stcIds = stcs.map(itm => itm.id);
-    const tcvs = tcs.map(itm => {
-      return {
-        ...itm,
-        state: stcIds.indexOf(itm.id) <= 0 ? 'normal' : 'selected'
-      } as TestCaseView;
-    });
-    setTestCases(tcvs);
-  }, [data]);
-
   const resetStatus = () => {
-    const newTc = [...testCases];
+    const newTc = [...tcView];
     for (let idx = 0; idx < newTc.length; idx++) {
       newTc[idx].state =
         newTc[idx].state === 'selecting' ? 'normal' : newTc[idx].state;
     }
-    setTestCases(newTc);
+    setTcView(newTc);
   };
   const onOkHandler = () => {
-    const willSelect = testCases
+    const willSelect = tcView
       .filter(itm => itm.state === 'selecting')
       .map(itm => itm.id);
-    const selected = testCases
+    const selected = tcView
       .filter(itm => itm.state === 'selected')
       .map(itm => itm.id);
 
@@ -70,14 +71,14 @@ export const AddTestCase = ({
   };
 
   const updateCheckStateHandler = (id: string) => {
-    const newState = [...testCases];
+    const newState = [...tcView];
     const idx = newState.findIndex(itm => itm.id === id);
     if (idx < 0) {
       return;
     }
 
-    let newRowState = testCases[idx].state;
-    switch (testCases[idx].state) {
+    let newRowState = newState[idx].state;
+    switch (newState[idx].state) {
       case 'selected':
         newRowState = 'selected';
         break;
@@ -88,8 +89,8 @@ export const AddTestCase = ({
         newRowState = 'normal';
         break;
     }
-    testCases[idx].state = newRowState;
-    setTestCases(testCases);
+    newState[idx].state = newRowState;
+    setTcView(newState);
   };
   const columns = [
     {
@@ -104,26 +105,35 @@ export const AddTestCase = ({
       onFilter: (value: string, record: TestCaseView) =>
         record.name.toLowerCase().includes(value),
       filteredValue: [filterStr]
-    },
-    {
-      title: 'Selected',
-      dataIndex: 'state',
-      key: 'state',
-      render: (name: string, data: TestCaseView) => {
-        if (name === 'selected') {
-          return <Icon type="check"></Icon>;
-        }
-        return (
-          <Checkbox
-            defaultChecked={name === 'selecting' ? true : false}
-            onChange={() => {
-              updateCheckStateHandler(data.id);
-            }}
-          ></Checkbox>
-        );
-      }
     }
   ];
+
+  const rowSelection = {
+    onChange: (
+      selectedRowKeys: string[] | number[],
+      selectedRows: TestCaseView[]
+    ) => {
+      const selectedIds = selectedRows.map(r => r.key);
+      const newState: TestCaseView[] = tcView.map(itm => {
+        const newTcState =
+          itm.state === 'selected'
+            ? 'selected'
+            : selectedIds.findIndex(key => key === itm.key) < 0
+            ? 'normal'
+            : 'selecting';
+        return {
+          ...itm,
+          state: newTcState
+        };
+      });
+      setTcView(newState);
+    },
+    getCheckboxProps: (record: TestCaseView) => ({
+      disabled: record.state === 'selected',
+      name: record.id,
+      checked: record.state === 'selecting'
+    })
+  };
 
   return (
     <>
@@ -140,7 +150,11 @@ export const AddTestCase = ({
             style={{ width: 200 }}
           />
         </div>
-        <Table dataSource={testCases} columns={columns}></Table>
+        <Table
+          rowSelection={rowSelection}
+          dataSource={tcView}
+          columns={columns}
+        ></Table>
       </Modal>
     </>
   );

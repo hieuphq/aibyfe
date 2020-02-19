@@ -3,8 +3,37 @@ import { TestCase, UpdatableListResponse, UpdatableResponse } from 'types/app';
 import { appData } from 'generator';
 
 export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
-  list(testSuiteId: string): Promise<UpdatableListResponse<TestCase>> {
+  list(projectId: string): Promise<UpdatableListResponse<TestCase>> {
     return new Promise<UpdatableListResponse<TestCase>>((resolve, reject) => {
+      if (projectId === '' || projectId === null || projectId === undefined) {
+        resolve({
+          data: appData.testCases.list()
+        });
+        return;
+      }
+      const data = appData.testCases.list(itm => {
+        return itm.projectId === projectId;
+      });
+
+      resolve({
+        data
+      });
+    });
+  }
+  listInTestsuite(
+    testSuiteId: string
+  ): Promise<UpdatableListResponse<TestCase>> {
+    return new Promise<UpdatableListResponse<TestCase>>((resolve, reject) => {
+      if (
+        testSuiteId === '' ||
+        testSuiteId === null ||
+        testSuiteId === undefined
+      ) {
+        resolve({
+          data: appData.testCases.list()
+        });
+        return;
+      }
       const existed = appData.testSuiteConnection
         .list(itm =>
           testSuiteId !== '' ? itm.testSuiteId === testSuiteId : true
@@ -37,6 +66,7 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
         id: '',
         sort: (appData.testCases.genNextID() as unknown) as number,
         name: data.name || '',
+        projectId: data.projectId || '',
         createdAt: new Date(),
         updatedAt: new Date()
       };
