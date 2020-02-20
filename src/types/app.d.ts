@@ -70,6 +70,7 @@ export interface TestCase {
   name: string;
   sort: number;
   projectId: string;
+  steps?: Step[];
   createdAt: date;
   updatedAt: date;
 }
@@ -77,6 +78,16 @@ export interface TestCase {
 export interface TestCaseForTestSuite {
   testcases: TestCase[];
   selectedTestcases: TestCase[];
+}
+
+export interface Step {
+  id: string;
+  name: string;
+  testCaseId: string;
+  sort: number;
+  type: string;
+  createdAt: date;
+  updatedAt: date;
 }
 
 export interface UpdatableListResponse<T> {

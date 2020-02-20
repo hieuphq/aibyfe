@@ -9,6 +9,14 @@ import {
 import { IEntity as Entity, List } from './list';
 import * as Factory from './factory';
 
+interface AppRawData {
+  users: User[];
+  projects: Project[];
+  testSuites: TestSuite[];
+  testCases: TestCase[];
+  testSuiteConnection: TestSuiteTestCaseConnect[];
+  projectConnection: UserProject[];
+}
 export interface AppData {
   users: List<User>;
   projects: List<Project>;
@@ -26,7 +34,7 @@ const defaultUser = {
   id: numOfUser.toString()
 };
 
-export function generateAppData(): AppData {
+function generateAppData(): AppRawData {
   let us = Factory.usersFactory().buildList(numOfUser);
   us.push(defaultUser);
   let ps = Factory.projectsFactory(us.length).buildList(numOfProject);
@@ -68,14 +76,37 @@ export function generateAppData(): AppData {
     tstc = [...tstc, ...tsConn];
   }
   return {
-    users: new List<User>(...us),
-    projects: new List<Project>(...ps),
-    testSuites: new List<TestSuite>(...ts),
-    testCases: new List<TestCase>(...tc),
-    testSuiteConnection: new List<TestSuiteTestCaseConnect>(...tstc),
-    projectConnection: new List<UserProject>(...up)
+    users: [...us],
+    projects: [...ps],
+    testSuites: [...ts],
+    testCases: [...tc],
+    testSuiteConnection: [...tstc],
+    projectConnection: [...up]
   };
 }
 
-export const appData = generateAppData();
+const SeedDataKey = 'seed-data';
+function generateSeedData(): AppData {
+  const dt = localStorage.getItem(SeedDataKey);
+  let rawData: AppRawData;
+  if (dt === null) {
+    rawData = generateAppData();
+    localStorage.setItem(SeedDataKey, JSON.stringify(rawData));
+  } else {
+    rawData = JSON.parse(dt);
+  }
+
+  return {
+    users: new List<User>(...rawData.users),
+    projects: new List<Project>(...rawData.projects),
+    testSuites: new List<TestSuite>(...rawData.testSuites),
+    testCases: new List<TestCase>(...rawData.testCases),
+    testSuiteConnection: new List<TestSuiteTestCaseConnect>(
+      ...rawData.testSuiteConnection
+    ),
+    projectConnection: new List<UserProject>(...rawData.projectConnection)
+  };
+}
+
+export const appData = generateSeedData();
 export type IEntity = Entity;

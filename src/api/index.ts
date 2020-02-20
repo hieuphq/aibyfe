@@ -119,6 +119,10 @@ export class Repo {
   getProjects(): Promise<UpdatableListResponse<Project>> {
     return this.store.projects.list('', this.defaultHeaders());
   }
+
+  getTestCase(testCaseId: string): Promise<UpdatableResponse<TestCase>> {
+    return this.store.testCase.get(testCaseId, this.defaultHeaders());
+  }
 }
 
 export const repo = new Repo(NewFakeStore());

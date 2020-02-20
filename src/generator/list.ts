@@ -4,12 +4,6 @@ export interface IEntity {
   id: string;
 }
 
-// function Preload<T, S>( s: S, sKey: keyof S) :T[] {
-//   if (typeof s[sKey] === typeof T) {
-//     return s[sKey] as unknown as T[]
-//   }
-// }
-
 export class List<T extends IEntity> {
   private data: T[];
   private nextID: number;

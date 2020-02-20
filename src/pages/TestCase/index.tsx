@@ -1,3 +1,2 @@
-import React from 'react';
-
 export * from './TestCasePage';
+export * from './TestCaseDetailPage';

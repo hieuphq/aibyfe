@@ -50,11 +50,12 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
   get(id: string): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
       const itm = appData.testCases.list(itm => itm.id === id);
+
       if (itm.length <= 0) {
         reject(new Error('Not found Test suite'));
         return;
       }
-      resolve({ data: this.preload(itm[0]) });
+      resolve({ data: itm[0] });
     });
   }
   preload(dt: TestCase): TestCase {

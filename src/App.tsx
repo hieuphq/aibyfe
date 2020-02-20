@@ -14,7 +14,7 @@ import SelectProject from 'pages/SelectProject';
 import HomePage from 'pages/Home';
 import Project from 'pages/Project';
 import TestSuitePage from 'pages/TestSuite';
-import { TestCasePage } from 'pages/TestCase';
+import { TestCasePage, TestCaseDetailPage } from 'pages/TestCase';
 import UIPage from 'pages/UI';
 import Environment from 'pages/Environment';
 import TestResult from 'pages/TestResult';
@@ -47,6 +47,11 @@ const App = () => {
             Component={TestSuiteDetailPage}
           />
           <ComponentRoute path={ROUTES.TESTCASE} Component={TestCasePage} />
+          <ComponentRoute
+            path={ROUTES.TESTCASE_DETAIL}
+            Component={TestCaseDetailPage}
+          />
+
           <ComponentRoute path={ROUTES.PAGE} Component={UIPage} />
           <ComponentRoute path={ROUTES.ENVIRONMENT} Component={Environment} />
           <ComponentRoute path={ROUTES.TEST_RESULT} Component={TestResult} />
