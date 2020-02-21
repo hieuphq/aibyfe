@@ -8,9 +8,9 @@ export class List<T extends IEntity> {
   private data: T[];
   private nextID: number;
 
-  constructor(...elements: T[]) {
+  constructor(nextID: number, ...elements: T[]) {
     this.data = elements;
-    this.nextID = elements.length;
+    this.nextID = nextID;
   }
 
   add(t: T): T | null {
@@ -23,6 +23,10 @@ export class List<T extends IEntity> {
     t.id = this.genNextID();
     this.data.push(t);
     return t;
+  }
+
+  getNextID(): number {
+    return this.nextID;
   }
 
   genNextID(): string {

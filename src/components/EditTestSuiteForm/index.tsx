@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { FormComponentProps } from 'antd/lib/form';
-import { Icon, Form, Input, Checkbox, Button, Row, Table } from 'antd';
-import { TestCase } from 'types/app';
+import { Form, Input, Checkbox, Button, Row, Table, Card } from 'antd';
+import { TestCase } from '@types';
 
-export interface EditTestSuiteFormProps extends FormComponentProps {
+export interface EditTestSuiteFormProps {
   submit(values: { name: string; testCases: string[] }): void;
   testcases: TestCase[];
 }
 
 type TestCaseState = 'normal' | 'selecting';
 type TestCaseView = TestCase & { state: TestCaseState; key: number };
+type TestSuiteView = { name: string; testcases: TestCaseView[] };
+const emptyView: TestSuiteView = { name: '', testcases: [] };
 
 const EditTestSuiteForm: React.FC<EditTestSuiteFormProps> = ({
-  form,
   submit,
   testcases
 }: EditTestSuiteFormProps) => {
-  const [tcview, setTcView] = useState<TestCaseView[]>([]);
+  const [tsuiteView, setTsuiteView] = useState(emptyView);
+  const [tcView, setTcView] = useState<TestCaseView[]>([]);
   useEffect(() => {
     const tcviews: TestCaseView[] = testcases.map((itm, index) => {
       return { ...itm, state: 'normal', key: index };
     });
     setTcView(tcviews);
   }, [testcases]);
-  const { getFieldDecorator } = form;
 
   const getTestCaseSeletedIds = (): string[] => {
-    return tcview.filter(itm => itm.state === 'selecting').map(itm => itm.id);
+    return tcView.filter(itm => itm.state === 'selecting').map(itm => itm.id);
   };
 
   const columns = [
@@ -41,17 +41,6 @@ const EditTestSuiteForm: React.FC<EditTestSuiteFormProps> = ({
       key: 'name'
     }
   ];
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        const name = form.getFieldValue('name') as string;
-
-        submit({ name, testCases: getTestCaseSeletedIds() });
-        return;
-      }
-    });
-  };
 
   const tailFormItemLayout = {
     wrapperCol: {
@@ -72,7 +61,7 @@ const EditTestSuiteForm: React.FC<EditTestSuiteFormProps> = ({
       selectedRows: TestCaseView[]
     ) => {
       const selectedIds = selectedRows.map(r => r.key);
-      const newState: TestCaseView[] = tcview.map(itm => {
+      const newState: TestCaseView[] = tcView.map(itm => {
         return {
           ...itm,
           state:
@@ -89,24 +78,51 @@ const EditTestSuiteForm: React.FC<EditTestSuiteFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Item label="Name">
-        {getFieldDecorator('name', {
-          rules: [
-            {
-              required: true,
-              message: 'Please input your Test suite name'
-            }
-          ]
-        })(<Input placeholder="Name" />)}
+    <Form
+      onFinish={values => {
+        submit({ name: values.name, testCases: getTestCaseSeletedIds() });
+      }}
+      fields={[
+        { name: 'name', value: tsuiteView.name },
+        { name: 'testcases', value: tsuiteView.testcases }
+      ]}
+    >
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[
+          {
+            required: true,
+            message: 'Please input your Test suite name'
+          }
+        ]}
+      >
+        <Input placeholder="Name" />
       </Form.Item>
 
       <Form.Item label="Test Cases">
-        <Table
+        <Form.List name="testcase">
+          {fields => {
+            return (
+              <>
+                {fields.map(itm => {
+                  const fieldKey = itm.fieldKey;
+                  return (
+                    <Card size="small">
+                      // TODO: leu leu
+                      {tsuiteView.testcases[fieldKey].name}
+                    </Card>
+                  );
+                })}
+              </>
+            );
+          }}
+        </Form.List>
+        {/* <Table
           rowSelection={rowSelection}
-          dataSource={tcview}
+          dataSource={tcView}
           columns={columns}
-        ></Table>
+        ></Table> */}
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit">
@@ -117,6 +133,4 @@ const EditTestSuiteForm: React.FC<EditTestSuiteFormProps> = ({
   );
 };
 
-export default Form.create<EditTestSuiteFormProps>({
-  name: 'Create test suite form'
-})(EditTestSuiteForm);
+export default EditTestSuiteForm;

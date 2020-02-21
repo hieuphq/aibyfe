@@ -53,4 +53,5 @@ export interface StoreProtocol {
     ): Promise<UpdatableListResponse<TestCase>>;
   };
   projects: IUpdatableStore<Project> & {};
+  pages: IUpdatableStore<Page> & {};
 }

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Card } from 'antd';
 import { useAppContext } from 'context/AppContext';
 import EditTestSuiteForm from 'components/EditTestSuiteForm';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestCase } from 'types/app';
+import { TestCase } from '@types';
 import { navigate } from '@reach/router';
 import { ROUTES } from 'constant/routes';
 
-const TestSuiteCreatePage = () => {
+export const TestSuiteCreatePage = () => {
   const { getProjectId } = useAppContext();
   const projectId = getProjectId() || '';
   const getTestCasesKey = 'get-test-cases';
@@ -17,32 +17,26 @@ const TestSuiteCreatePage = () => {
   );
   const [testCases, setTestCases] = useState<TestCase[]>([]);
 
-  const [addTestSuiteMutation] = useMutation(
-    (values: { name: string; testCases: string[] }) => {
-      return repo.createTestSuite({
-        projectId: projectId,
-        name: values.name,
-        testCases: values.testCases
-      });
-    },
-    {
-      refetchQueries: [],
-      refetchQueriesOnFailure: true
-    }
-  );
-
   useEffect(() => {
     const tcs = data?.data || [];
     setTestCases(tcs);
   }, [data]);
   return (
     <>
-      <h1>TestSuiteCreatePage</h1>
+      <h1>Create Test Suite</h1>
       <Card>
         <EditTestSuiteForm
-          submit={val => {
-            addTestSuiteMutation({ name: val.name, testCases: val.testCases });
-            navigate(ROUTES.TESTSUITE);
+          submit={async val => {
+            try {
+              await repo.createTestSuite({
+                projectId: projectId,
+                name: val.name,
+                testCases: val.testCases
+              });
+              navigate(ROUTES.TESTSUITE);
+            } catch (err) {
+              console.log(err);
+            }
           }}
           testcases={testCases}
         ></EditTestSuiteForm>
@@ -50,5 +44,3 @@ const TestSuiteCreatePage = () => {
     </>
   );
 };
-
-export default TestSuiteCreatePage;

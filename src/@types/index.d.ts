@@ -90,6 +90,28 @@ export interface Step {
   updatedAt: date;
 }
 
+export interface Page {
+  id: string;
+  name: string;
+  projectId: string;
+  sort: number;
+  createdAt: date;
+  updatedAt: date;
+}
+
+export interface CreatePage {
+  name: string;
+  projectId: string;
+}
+
+export interface TestcasePage {
+  id: string;
+  testCaseId: string;
+  pageId: string;
+  createdAt: date;
+  updatedAt: date;
+}
+
 export interface UpdatableListResponse<T> {
   data?: T[];
   error?: string | null;

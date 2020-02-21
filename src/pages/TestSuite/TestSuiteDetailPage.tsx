@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Card, Descriptions, Divider, Table, Button } from 'antd';
 import { useQuery, useMutation } from 'react-query';
+
 import { repo } from 'api';
-import { TestCase, TestSuite } from 'types/app';
+import { TestCase, TestSuite } from '@types';
 import styled from 'styled-components';
 import { AddTestCase } from 'components/AddTestCase';
 import { useAppContext } from 'context/AppContext';
@@ -17,41 +18,48 @@ const TitleHeader = styled.div`
 `;
 
 type TestCaseView = TestCase & { key: number };
+
 export interface TestSuiteDetailPageProps extends RouteComponentProps {
   testSuiteId?: string;
 }
 
-const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
+export const TestSuiteDetailPage = ({
+  testSuiteId
+}: TestSuiteDetailPageProps) => {
   const { getProjectId } = useAppContext();
   const getTestSuiteQueryKey = 'get-test-suites' + testSuiteId;
   const getTestCaseAddingQueryKey = 'get-test-cases-adding' + testSuiteId;
   const [visibleAddTestCase, setVisibleAddTestCase] = useState(false);
-  const { data, isLoading } = useQuery(getTestSuiteQueryKey, () =>
-    repo.getTestSuite(testSuiteId || '')
-  );
-
   const [testSuite, setTestSuite] = useState<TestSuite | null>(null);
   const [selectedTestCases, setSelectedTestCases] = useState<TestCaseView[]>(
     []
   );
+
+  const { data, refetch } = useQuery(getTestSuiteQueryKey, () => {
+    return repo.getTestSuite(testSuiteId || '');
+  });
+
+  const { data: testCasesRaw, refetch: refetchAddingData } = useQuery(
+    getTestCaseAddingQueryKey,
+    () => {
+      return repo.getTestCasesForAddingFlow(
+        getProjectId() || '',
+        testSuiteId || ''
+      );
+    }
+  );
   useEffect(() => {
-    if (data?.data !== null) {
+    if (data) {
       const ts: TestSuite | null = data?.data ? { ...data.data } : null;
       const tcs = data?.data?.testCases || [];
       const tcvs: TestCaseView[] = tcs.map((itm, index) => {
         return { ...itm, key: index };
       });
       setTestSuite(ts);
+      console.log('setNewTcList', tcvs);
       setSelectedTestCases(tcvs);
     }
   }, [data]);
-
-  const { data: testCasesRaw } = useQuery(getTestCaseAddingQueryKey, () => {
-    return repo.getTestCasesForAddingFlow(
-      getProjectId() || '',
-      testSuiteId || ''
-    );
-  });
 
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [selectedTestCaseIds, setSelectedTestCaseIds] = useState<string[]>([]);
@@ -64,36 +72,11 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
     setSelectedTestCaseIds(stcIds);
   }, [testCasesRaw]);
 
-  const [removeTestCaseMutation] = useMutation(
-    (values: { testSuiteId: string; testCaseId: string }) => {
-      return repo.removeTestcaseFromSuite(
-        values.testSuiteId,
-        values.testCaseId
-      );
-    },
-    {
-      refetchQueries: [getTestSuiteQueryKey, getTestCaseAddingQueryKey],
-      // to revalidate the data and ensure the UI doesn't
-      // remain in an incorrect state, ALWAYS trigger a
-      // a refetch of the data, even on failure
-      refetchQueriesOnFailure: true
-    }
-  );
-
-  const [addTestCaseMutation] = useMutation(
-    (values: { testSuiteId: string; testCaseId: string }) => {
-      return repo.addTestcaseToSuite(values.testSuiteId, values.testCaseId);
-    },
-    {
-      refetchQueries: [getTestSuiteQueryKey, getTestCaseAddingQueryKey],
-      refetchQueriesOnFailure: true
-    }
-  );
-
   async function handleDeleteTestcase(testSuiteId: string, testCaseId: string) {
     try {
-      // send text to the API
-      await removeTestCaseMutation({ testSuiteId, testCaseId });
+      await repo.removeTestcaseFromSuite(testSuiteId, testCaseId);
+      await refetch();
+      await refetchAddingData();
     } catch (err) {
       console.error(err);
     }
@@ -101,8 +84,9 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
 
   async function handleAddTestcase(testSuiteId: string, testCaseId: string) {
     try {
-      // send text to the API
-      await addTestCaseMutation({ testSuiteId, testCaseId });
+      await repo.addTestcaseToSuite(testSuiteId, testCaseId);
+      await refetch();
+      await refetchAddingData();
     } catch (err) {
       console.error(err);
     }
@@ -140,11 +124,10 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
 
   return (
     <>
-      <h1>TestSuiteDetailPage</h1>
+      <h1>Test Suite Detail Page</h1>
       <Card>
         <Descriptions
           title="Basic Infomation"
-          layout="vertical"
           column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
         >
           <Descriptions.Item label="ID">{testSuite?.id}</Descriptions.Item>
@@ -162,8 +145,6 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
         </Button>
         <Table dataSource={selectedTestCases} columns={columns}></Table>
       </Card>
-      {/* {mutatedData ? () :()} */}
-      {isLoading && <h1>Loading</h1>}
       <AddTestCase
         testCases={testCases}
         selectedTestCaseIds={selectedTestCaseIds}
@@ -184,5 +165,3 @@ const TestSuiteDetailPage = ({ testSuiteId }: TestSuiteDetailPageProps) => {
     </>
   );
 };
-
-export default TestSuiteDetailPage;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import createUseContext from 'constate';
-import { AppRootState, AuthState } from 'types/app.d';
+import constate from 'constate';
+import { AppRootState } from '@types';
 
 const TokenKey = 'token';
 const ProjectIdKey = 'projectId';
@@ -22,11 +22,11 @@ function useAppState() {
     setAppState({ auth: { isLogin: !!token } });
     localStorage.setItem(TokenKey, token);
   };
-  const isLogin = (): boolean | undefined => {
-    return appState.auth?.isLogin;
+  const isLogin = (): boolean => {
+    return appState.auth?.isLogin || false;
   };
-  const getProjectId = (): string | undefined | null => {
-    return appState.projectId;
+  const getProjectId = (): string => {
+    return appState.projectId || '';
   };
   const setProjectId = (projectId: string) => {
     setAppState({ ...appState, projectId });
@@ -47,4 +47,4 @@ function useAppState() {
   };
 }
 
-export const useAppContext = createUseContext(useAppState);
+export const [AppProvider, useAppContext] = constate(useAppState);

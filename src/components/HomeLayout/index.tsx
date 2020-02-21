@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout as AntLayout } from 'antd';
 import styled from 'styled-components';
-import Sider, { LayoutSidebarMenuItem } from './Sider';
 import { RouteComponentProps } from '@reach/router';
+import { User } from '@types';
 
 const { Header, Content, Footer } = AntLayout;
 const ContentWraper = styled(AntLayout)`
@@ -12,26 +12,11 @@ const LayoutWrapper = styled(AntLayout)`
   min-height: 100vh;
 `;
 export interface LayoutProps extends RouteComponentProps {
-  collapsed: boolean;
-  selectedItem: string;
-  onItemClick: (item: LayoutSidebarMenuItem) => void;
-  menu: LayoutSidebarMenuItem[];
+  user?: User;
 }
-const Layout: React.FC<LayoutProps> = ({
-  collapsed,
-  selectedItem,
-  onItemClick,
-  menu,
-  children
-}) => {
+const HomeLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <LayoutWrapper>
-      <Sider
-        collapsed={collapsed}
-        selectedItem={selectedItem}
-        onItemClick={onItemClick}
-        menu={menu}
-      />
       <ContentWraper>
         <Header style={{ background: '#fff', padding: 0 }} />
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
@@ -45,4 +30,4 @@ const Layout: React.FC<LayoutProps> = ({
   );
 };
 
-export default Layout;
+export default HomeLayout;

@@ -1,37 +1,31 @@
 import { IUpdatableStore } from '../type';
-import { Project, UpdatableListResponse, UpdatableResponse } from '@types';
+import { Page, UpdatableListResponse, UpdatableResponse } from '@types';
 import { DataFactory } from 'generator';
-import { decodeToken } from './token';
 
-export default class FakeProjectStore implements IUpdatableStore<Project> {
+export default class FakePageStore implements IUpdatableStore<Page> {
   list(
-    blank: string,
+    projectId: string,
     headers?: HeadersInit
-  ): Promise<UpdatableListResponse<Project>> {
-    return new Promise<UpdatableListResponse<Project>>((resolve, reject) => {
+  ): Promise<UpdatableListResponse<Page>> {
+    return new Promise<UpdatableListResponse<Page>>((resolve, reject) => {
       const appData = DataFactory.getInstance().appData();
-      const userId = decodeToken(headers);
-      if (userId === '') {
+      if (projectId === '') {
         resolve({
-          data: appData.projects.list()
+          data: appData.pages.list()
         });
         return;
       }
-      const existed = appData.projectConnection
-        .list(itm => itm.userId === userId)
-        .map(itm => itm.projectId);
+      console.log(appData);
 
       resolve({
-        data: appData.projects.list(itm => {
-          return existed.indexOf(itm.id) >= 0;
-        })
+        data: appData.pages.list(itm => itm.projectId === projectId)
       });
     });
   }
-  get(id: string): Promise<UpdatableResponse<Project>> {
-    return new Promise<UpdatableResponse<Project>>((resolve, reject) => {
+  get(id: string): Promise<UpdatableResponse<Page>> {
+    return new Promise<UpdatableResponse<Page>>((resolve, reject) => {
       const appData = DataFactory.getInstance().appData();
-      const itm = appData.projects.list(itm => itm.id === id);
+      const itm = appData.pages.list(itm => itm.id === id);
       if (itm.length <= 0) {
         reject(new Error('Not found Test suite'));
         return;
@@ -39,20 +33,21 @@ export default class FakeProjectStore implements IUpdatableStore<Project> {
       resolve({ data: this.preload(itm[0]) });
     });
   }
-  preload(dt: Project): Project {
+  preload(dt: Page): Page {
     return dt;
   }
-  create(data: Partial<Project>): Promise<UpdatableResponse<Project>> {
-    return new Promise<UpdatableResponse<Project>>((resolve, reject) => {
+  create(data: Partial<Page>): Promise<UpdatableResponse<Page>> {
+    return new Promise<UpdatableResponse<Page>>((resolve, reject) => {
       const appData = DataFactory.getInstance().appData();
-      const itm: Project = {
+      const itm: Page = {
         id: '',
-        ownerId: data.ownerId || '',
+        projectId: data.projectId || '',
+        sort: data.sort || 0,
         name: data.name || '',
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      const newItm = appData.projects.add(itm);
+      const newItm = appData.pages.add(itm);
       if (!newItm) {
         reject(new Error('unable to create test suite'));
       }
@@ -60,10 +55,10 @@ export default class FakeProjectStore implements IUpdatableStore<Project> {
       resolve({ data: newItm });
     });
   }
-  update(data: Partial<Project>): Promise<UpdatableResponse<Project>> {
-    return new Promise<UpdatableResponse<Project>>((resolve, reject) => {
+  update(data: Partial<Page>): Promise<UpdatableResponse<Page>> {
+    return new Promise<UpdatableResponse<Page>>((resolve, reject) => {
       const appData = DataFactory.getInstance().appData();
-      const updated = appData.projects.update(data, (old: Project) => {
+      const updated = appData.pages.update(data, (old: Page) => {
         return old.id === data.id;
       });
 
@@ -79,16 +74,14 @@ export default class FakeProjectStore implements IUpdatableStore<Project> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
       // Delete in connection data
       const appData = DataFactory.getInstance().appData();
-      const existed = appData.projectConnection.list(
-        itm => itm.projectId === id
-      );
+      const existed = appData.pageConnection.list(itm => itm.pageId === id);
       for (let idx = 0; idx < existed.length; idx++) {
         const itm = existed[idx];
-        appData.projectConnection.remove(itm.id);
+        appData.pageConnection.remove(itm.id);
       }
 
       // Delete test case data
-      if (!appData.projects.remove(id)) {
+      if (!appData.pages.remove(id)) {
         reject(new Error('unable to remove Test suite'));
         return;
       }

@@ -4,8 +4,9 @@ import {
   TestCase,
   TestSuiteTestCaseConnect,
   User,
-  UserProject
-} from 'types/app';
+  UserProject,
+  Page
+} from '@types';
 import faker from 'faker';
 import * as Factory from 'factory.ts';
 
@@ -125,5 +126,22 @@ export const testSuiteConnFactory = (
       testCaseStart + 1,
       testCaseStart + testCaseCount
     )
+  });
+};
+
+export const pageUIFactory = (startIdx: number, projectId: string) => {
+  return Factory.Sync.makeFactory<Page>({
+    id: idGenerator(startIdx),
+    name: generate<string>(seq => {
+      return faker.lorem.words(faker.random.number({ min: 3, max: 6 }));
+    }),
+    projectId: projectId.toString(),
+    sort: sortGenerator,
+    createdAt: generate<Date>(seq => {
+      return faker.date.past();
+    }),
+    updatedAt: generate<Date>(seq => {
+      return faker.date.past();
+    })
   });
 };

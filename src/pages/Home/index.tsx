@@ -4,6 +4,12 @@ import { useAppContext } from 'context/AppContext';
 import { ROUTES } from 'constant/routes';
 import Layout from 'components/Layout';
 import { LayoutSidebarMenuItem } from 'components/Layout/Sider';
+import {
+  CodeSandboxOutlined,
+  CodepenOutlined,
+  BuildOutlined,
+  KeyOutlined
+} from '@ant-design/icons';
 
 export interface HomePageProps extends RouteComponentProps {}
 
@@ -12,31 +18,31 @@ const menu: LayoutSidebarMenuItem[] = [
     id: 'test-suites',
     link: ROUTES.TESTSUITE,
     name: 'Test Suites',
-    icon: 'code-sandbox'
+    icon: CodeSandboxOutlined
   },
   {
     id: 'test-cases',
     link: ROUTES.TESTCASE,
     name: 'Test Cases',
-    icon: 'codepen'
+    icon: CodepenOutlined
   },
   {
     id: 'page',
     link: ROUTES.PAGE,
-    name: 'Page',
-    icon: 'build'
+    name: 'Pages',
+    icon: BuildOutlined
   },
-  {
-    id: 'environments',
-    link: ROUTES.ENVIRONMENT,
-    name: 'Environment',
-    icon: 'sliders'
-  },
+  // {
+  //   id: 'environments',
+  //   link: ROUTES.ENVIRONMENT,
+  //   name: 'Environment',
+  //   icon: 'sliders'
+  // },
   {
     id: 'test-results',
     link: ROUTES.TEST_RESULT,
     name: 'Test Result',
-    icon: 'key'
+    icon: KeyOutlined
   }
 ];
 const HomePage: React.FC<HomePageProps> = ({ children, location }) => {

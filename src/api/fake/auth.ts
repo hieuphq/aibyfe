@@ -1,15 +1,15 @@
 import { IAuthStore } from '../type';
-import { AuthResponse } from 'types/app';
-import { appData } from 'generator';
+import { AuthResponse } from '@types';
+import { DataFactory } from 'generator';
 import { generateToken } from './token';
 
 export default class FakeAuthStore implements IAuthStore {
   login(email: string, password: string): Promise<AuthResponse> {
     return new Promise<AuthResponse>((resolve, reject) => {
       setTimeout(() => {
-        const us = appData.users.list(
-          itm => itm.email === email || itm.username === email
-        );
+        const us = DataFactory.getInstance()
+          .appData()
+          .users.list(itm => itm.email === email || itm.username === email);
         if (us.length > 0) {
           resolve({
             data: {
@@ -26,7 +26,14 @@ export default class FakeAuthStore implements IAuthStore {
   signup(email: string, password: string): Promise<AuthResponse> {
     return new Promise<AuthResponse>((resolve, reject) => {
       setTimeout(() => {
-        const u = appData.users.add({ id: '', username: email, email: email });
+        const data = DataFactory.getInstance().appData();
+
+        const u = data.users.add({
+          id: '',
+          username: email,
+          email: email
+        });
+        DataFactory.getInstance().setAppData(data);
         resolve({
           data: {
             token: generateToken(u?.id || '')

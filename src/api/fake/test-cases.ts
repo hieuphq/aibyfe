@@ -1,10 +1,11 @@
 import { IUpdatableStore } from '../type';
-import { TestCase, UpdatableListResponse, UpdatableResponse } from 'types/app';
-import { appData } from 'generator';
+import { TestCase, UpdatableListResponse, UpdatableResponse } from '@types';
+import { DataFactory } from 'generator';
 
 export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
   list(projectId: string): Promise<UpdatableListResponse<TestCase>> {
     return new Promise<UpdatableListResponse<TestCase>>((resolve, reject) => {
+      const appData = DataFactory.getInstance().appData();
       if (projectId === '' || projectId === null || projectId === undefined) {
         resolve({
           data: appData.testCases.list()
@@ -24,6 +25,7 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
     testSuiteId: string
   ): Promise<UpdatableListResponse<TestCase>> {
     return new Promise<UpdatableListResponse<TestCase>>((resolve, reject) => {
+      const appData = DataFactory.getInstance().appData();
       if (
         testSuiteId === '' ||
         testSuiteId === null ||
@@ -35,9 +37,7 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
         return;
       }
       const existed = appData.testSuiteConnection
-        .list(itm =>
-          testSuiteId !== '' ? itm.testSuiteId === testSuiteId : true
-        )
+        .list(itm => itm.testSuiteId === testSuiteId)
         .map(itm => itm.testCaseId);
 
       resolve({
@@ -49,6 +49,7 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
   }
   get(id: string): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
+      const appData = DataFactory.getInstance().appData();
       const itm = appData.testCases.list(itm => itm.id === id);
 
       if (itm.length <= 0) {
@@ -63,6 +64,7 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
   }
   create(data: Partial<TestCase>): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
+      const appData = DataFactory.getInstance().appData();
       const itm: TestCase = {
         id: '',
         sort: (appData.testCases.genNextID() as unknown) as number,
@@ -72,14 +74,16 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
         updatedAt: new Date()
       };
       const newItm = appData.testCases.add(itm);
-      if (newItm) {
+      if (!newItm) {
         reject(new Error('unable to create test suite'));
       }
+      DataFactory.getInstance().setAppData(appData);
       resolve({ data: newItm });
     });
   }
   update(data: Partial<TestCase>): Promise<UpdatableResponse<TestCase>> {
     return new Promise<UpdatableResponse<TestCase>>((resolve, reject) => {
+      const appData = DataFactory.getInstance().appData();
       const updated = appData.testCases.update(data, (old: TestCase) => {
         return old.id === data.id;
       });
@@ -89,12 +93,14 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
         return;
       }
 
+      DataFactory.getInstance().setAppData(appData);
       resolve({ data: updated });
     });
   }
   delete(id: string): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
       // Delete in connection data
+      const appData = DataFactory.getInstance().appData();
       const existed = appData.testSuiteConnection.list(
         itm => itm.testCaseId === id
       );
@@ -109,6 +115,7 @@ export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {
         return;
       }
 
+      DataFactory.getInstance().setAppData(appData);
       resolve({ data: true });
     });
   }

@@ -4,5 +4,6 @@ export const Endpoints = {
   TEST_SUITE: '/api/test-suites',
   USER: '/api/users',
   TEST_CASE: '/api/test-cases',
-  PROJECT: '/api/projects'
+  PROJECT: '/api/projects',
+  PAGE: '/api/pages'
 };

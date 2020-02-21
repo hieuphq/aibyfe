@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
-import { TestCase } from 'types/app';
+import { TestCase } from '@types';
 import { repo } from 'api';
-import { Modal, Table, Icon, Checkbox, Input } from 'antd';
+import { Modal, Table, Checkbox, Input } from 'antd';
 
 const { Search } = Input;
 
@@ -109,10 +108,7 @@ export const AddTestCase = ({
   ];
 
   const rowSelection = {
-    onChange: (
-      selectedRowKeys: string[] | number[],
-      selectedRows: TestCaseView[]
-    ) => {
+    onChange: (selectedRowKeys: any, selectedRows: TestCaseView[]) => {
       const selectedIds = selectedRows.map(r => r.key);
       const newState: TestCaseView[] = tcView.map(itm => {
         const newTcState =

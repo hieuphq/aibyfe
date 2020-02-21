@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Card, Descriptions, Divider, Table, Button } from 'antd';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestCase, Step } from 'types/app';
+import { TestCase, Step } from '@types';
 import styled from 'styled-components';
 import { AddTestCase } from 'components/AddTestCase';
 import { useAppContext } from 'context/AppContext';
@@ -25,7 +25,7 @@ export const TestCaseDetailPage = ({ testCaseId }: TestCaseDetailPageProps) => {
   const { getProjectId } = useAppContext();
   const getTestCaseQueryKey = 'get-test-cases' + testCaseId;
   const [visibleAddTestCase, setVisibleAddTestCase] = useState(false);
-  const { data, isLoading } = useQuery(getTestCaseQueryKey, () =>
+  const { data } = useQuery(getTestCaseQueryKey, () =>
     repo.getTestCase(testCaseId || '')
   );
 

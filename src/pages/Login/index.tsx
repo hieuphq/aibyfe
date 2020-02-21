@@ -3,16 +3,12 @@ import { useAppContext } from 'context/AppContext';
 import { RouteComponentProps, Redirect } from '@reach/router';
 import Layout from 'components/LoginLayout';
 import LoginForm from 'components/LoginForm';
-import { useMutation } from 'react-query';
+// import { useMutation } from 'swr';
 import { repo } from 'api';
-import { AuthResponse, AuthRequest } from 'types/app';
 import { ROUTES } from 'constant/routes';
 
 const LoginPage: React.FunctionComponent<RouteComponentProps> = () => {
   const { isLogin, setAuthState } = useAppContext();
-  const [mutateLogin, { isLoading }] = useMutation<AuthResponse, AuthRequest>(
-    req => repo.login(req.email, req.password)
-  );
 
   if (isLogin()) {
     return <Redirect to="/" noThrow />;
@@ -20,11 +16,7 @@ const LoginPage: React.FunctionComponent<RouteComponentProps> = () => {
 
   async function onSubmit(values: { email: string; password: string }) {
     try {
-      let req: AuthRequest = {
-        email: values.email,
-        password: values.password
-      };
-      const res = await mutateLogin(req);
+      const res = await repo.login(values.email, values.password);
       setAuthState(res.data.token);
     } catch (err) {
       console.error(err);
@@ -38,7 +30,6 @@ const LoginPage: React.FunctionComponent<RouteComponentProps> = () => {
         forgotPasswordLink={ROUTES.FORGOT_PASSWORD}
         signupLink={ROUTES.SIGNUP}
       />
-      {isLoading && <div>Loading</div>}
     </Layout>
   );
 };

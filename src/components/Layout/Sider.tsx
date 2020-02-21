@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { Layout as AntLayout, Icon, Menu } from 'antd';
+import { Layout as AntLayout, Menu } from 'antd';
 
 const SiderStyled = styled(AntLayout.Sider)`
 overflow: 'auto',
@@ -10,7 +10,7 @@ left: 0,
 `;
 
 export type LayoutSidebarMenuItem<T = {}> = {
-  icon?: string;
+  icon: React.ForwardRefExoticComponent<React.RefAttributes<HTMLSpanElement>>;
   id: string;
   link: string;
   name: React.ReactNode;
@@ -63,10 +63,10 @@ const Sider = ({
         onOpenChange={openKeys => setOpenKeys(openKeys)}
       >
         {(menu as Array<LayoutSidebarMenuItem>).map(item => {
-          const { id, icon, name } = item;
+          const { id, name, icon: Icon } = item;
           return (
             <Menu.Item key={id} onClick={e => onItemClick(item)}>
-              {icon && <Icon type={icon} />}
+              <Icon />
               <span className="nav-text">{name}</span>
             </Menu.Item>
           );
@@ -77,24 +77,3 @@ const Sider = ({
 };
 
 export default Sider;
-
-/* <Menu.Item key="1">
-    <Icon type="code-sandbox" />
-    <span className="nav-text">Test Suites</span>
-  </Menu.Item>
-  <Menu.Item key="2">
-    <Icon type="codepen" />
-    <span className="nav-text">Test Case</span>
-  </Menu.Item>
-  <Menu.Item key="3">
-    <Icon type="build" />
-    <span className="nav-text">Page</span>
-  </Menu.Item>
-  <Menu.Item key="4">
-    <Icon type="sliders" />
-    <span className="nav-text">Environment</span>
-  </Menu.Item>
-  <Menu.Item key="5">
-    <Icon type="file-done" />
-    <span className="nav-text">Test Result</span>
-  </Menu.Item> */

@@ -7,10 +7,11 @@ import {
   TestCase,
   TestCaseForTestSuite,
   CreateTestSuite,
-  Project
-} from 'types/app';
+  Project,
+  Page,
+  CreatePage
+} from '@types';
 import { NewFakeStore } from './fake';
-import { useAppContext } from 'context/AppContext';
 
 export class Repo {
   store: StoreProtocol;
@@ -122,6 +123,18 @@ export class Repo {
 
   getTestCase(testCaseId: string): Promise<UpdatableResponse<TestCase>> {
     return this.store.testCase.get(testCaseId, this.defaultHeaders());
+  }
+
+  getPages(projectId: string): Promise<UpdatableListResponse<Page>> {
+    return this.store.pages.list(projectId, this.defaultHeaders());
+  }
+
+  getPage(id: string): Promise<UpdatableResponse<Page>> {
+    return this.store.pages.get(id, this.defaultHeaders());
+  }
+
+  createPage(data: CreatePage): Promise<UpdatableResponse<Page>> {
+    return this.store.pages.create(data);
   }
 }
 

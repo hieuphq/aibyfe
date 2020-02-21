@@ -3,25 +3,24 @@ import { RouteComponentProps, Redirect, navigate } from '@reach/router';
 import { useAppContext } from 'context/AppContext';
 import { ROUTES } from 'constant/routes';
 import Layout from 'components/LoginLayout';
-import { Card, Select, Button, Divider, Row, Icon, message } from 'antd';
+import { Card, Select, Button, Divider, Row, message } from 'antd';
+import { CheckOutlined } from '@ant-design/icons';
 import { repo } from 'api';
 import { useQuery } from 'react-query';
-import { Project } from 'types/app';
+import { Project } from '@types';
 
 const { Option } = Select;
 
 export interface SelectProjectProps extends RouteComponentProps {}
 
 const SelectProjectPage: React.FC<SelectProjectProps> = () => {
-  const { data, isLoading } = useQuery('get-projects', () =>
-    repo.getProjects()
-  );
+  const { data } = useQuery('get-projects', () => repo.getProjects());
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedPId, setSelectedPId] = useState<string>('');
   useEffect(() => {
     const dt = data?.data || [];
     setProjects([...dt]);
-  }, [data, isLoading]);
+  }, [data]);
 
   const { isLogin, getProjectId, setProjectId } = useAppContext();
   if (!isLogin()) {
@@ -38,8 +37,7 @@ const SelectProjectPage: React.FC<SelectProjectProps> = () => {
         title="Select a Project"
         bordered={true}
         actions={[
-          <Icon
-            type="check"
+          <CheckOutlined
             onClick={() => {
               if (selectedPId === '') {
                 message.warning('Please choose a project in list');
@@ -58,11 +56,11 @@ const SelectProjectPage: React.FC<SelectProjectProps> = () => {
           showSearch
           style={{ width: '100%' }}
           placeholder="Project list"
-          loading={isLoading}
-          filterOption={(input, option) => {
-            const val = option.props.children as string;
-            return val.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-          }}
+          // filterOption={(input, option) => {
+          // TODO: filter
+          // const val = option.props.children as string;
+          // return val.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+          // }}
           onChange={e => {
             setSelectedPId(e.toString());
           }}
