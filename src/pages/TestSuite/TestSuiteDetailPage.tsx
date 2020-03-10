@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Card, Descriptions, Divider, Table, Button } from 'antd';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, queryCache } from 'react-query';
 
 import { repo } from 'api';
 import { TestCase, TestSuite } from '@types';
@@ -48,6 +48,33 @@ export const TestSuiteDetailPage = ({
       );
     }
   );
+
+  const [removeTestcase] = useMutation(
+    (values: { testSuiteId: string; testCaseId: string }) => {
+      return repo.removeTestcaseFromSuite(
+        values.testSuiteId,
+        values.testCaseId
+      );
+    },
+    {
+      onSuccess: () => {
+        queryCache.refetchQueries(getTestSuiteQueryKey);
+        queryCache.refetchQueries(getTestCaseAddingQueryKey);
+      }
+    }
+  );
+
+  const [addTestcase] = useMutation(
+    (values: { testSuiteId: string; testCaseId: string[] }) => {
+      return repo.addTestcaseToSuite(values.testSuiteId, values.testCaseId);
+    },
+    {
+      onSuccess: () => {
+        queryCache.refetchQueries(getTestSuiteQueryKey);
+        queryCache.refetchQueries(getTestCaseAddingQueryKey);
+      }
+    }
+  );
   useEffect(() => {
     if (data) {
       const ts: TestSuite | null = data?.data ? { ...data.data } : null;
@@ -56,7 +83,6 @@ export const TestSuiteDetailPage = ({
         return { ...itm, key: index };
       });
       setTestSuite(ts);
-      console.log('setNewTcList', tcvs);
       setSelectedTestCases(tcvs);
     }
   }, [data]);
@@ -74,19 +100,16 @@ export const TestSuiteDetailPage = ({
 
   async function handleDeleteTestcase(testSuiteId: string, testCaseId: string) {
     try {
-      await repo.removeTestcaseFromSuite(testSuiteId, testCaseId);
-      await refetch();
-      await refetchAddingData();
+      await removeTestcase({ testSuiteId, testCaseId });
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function handleAddTestcase(testSuiteId: string, testCaseId: string) {
+  async function handleAddTestcase(testSuiteId: string, testCaseId: string[]) {
     try {
-      await repo.addTestcaseToSuite(testSuiteId, testCaseId);
-      await refetch();
-      await refetchAddingData();
+      const res = await addTestcase({ testSuiteId, testCaseId });
+      console.log(res);
     } catch (err) {
       console.error(err);
     }
@@ -152,11 +175,7 @@ export const TestSuiteDetailPage = ({
         visible={visibleAddTestCase}
         onOk={data => {
           setVisibleAddTestCase(false);
-          for (let idx = 0; idx < data.willSelect.length; idx++) {
-            const testCaseId = data.willSelect[idx];
-
-            handleAddTestcase(testSuiteId || '', testCaseId);
-          }
+          handleAddTestcase(testSuiteId || '', data.willSelect);
         }}
         onCancel={() => {
           setVisibleAddTestCase(false);

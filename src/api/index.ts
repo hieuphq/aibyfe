@@ -107,7 +107,7 @@ export class Repo {
 
   addTestcaseToSuite(
     testSuiteId: string,
-    testCaseId: string
+    testCaseId: string | string[]
   ): Promise<UpdatableResponse<boolean>> {
     return this.store.testSuite.addTestCase(
       testSuiteId,

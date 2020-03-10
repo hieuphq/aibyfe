@@ -78,24 +78,53 @@ export default class TestSuiteStore implements IUpdatableStore<TestSuite> {
     headers?: HeadersInit
   ): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
-      return remove<UpdatableResponse<boolean>>(
+      remove<UpdatableResponse<boolean>>(
         this.baseUrl + Endpoints.TEST_SUITE + '/' + id + '/' + testCaseId,
         headers
-      );
+      )
+        .then(val => {
+          resolve(val);
+        })
+        .catch(err => {
+          reject(new Error(err));
+        });
     });
   }
 
   addTestCase(
     id: string,
-    testCaseId: string,
+    testCaseId: string | string[],
     headers?: HeadersInit
   ): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
-      return post<UpdatableResponse<boolean>>(
-        this.baseUrl + Endpoints.TEST_SUITE + '/' + id + '/' + testCaseId,
-        JSON.stringify({ testSuiteId: id, testCaseId }),
-        headers
-      );
+      let requestList: Promise<UpdatableResponse<boolean>>[] = [];
+
+      const genAddTestCaseRequest = (
+        testSuiteId: string,
+        testCaseId: string
+      ): Promise<UpdatableResponse<boolean>> => {
+        return post<UpdatableResponse<boolean>>(
+          this.baseUrl +
+            Endpoints.TEST_SUITE +
+            '/' +
+            testSuiteId +
+            '/' +
+            testCaseId,
+          JSON.stringify({ testSuiteId: id, testCaseId }),
+          headers
+        );
+      };
+      if (testCaseId as string) {
+        requestList.push(genAddTestCaseRequest(id, testCaseId as string));
+      } else {
+        for (let idx in testCaseId as string[]) {
+          requestList.push(genAddTestCaseRequest(id, testCaseId[idx]));
+        }
+      }
+      Promise.all(requestList).then(val => {
+        const isFailed = val.map(itm => itm.data).some(itm => itm === false);
+        resolve({ data: !isFailed });
+      });
     });
   }
 }

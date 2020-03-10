@@ -15,7 +15,6 @@ export default class FakePageStore implements IUpdatableStore<Page> {
         });
         return;
       }
-      console.log(appData);
 
       resolve({
         data: appData.pages.list(itm => itm.projectId === projectId)

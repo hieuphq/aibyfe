@@ -4,7 +4,7 @@ import {
   UpdatableResponse,
   TestSuite,
   TestCase
-} from 'types/app';
+} from '@types';
 export interface IAuthStore {
   login(email: string, password: string): Promise<AuthResponse>;
 
@@ -42,7 +42,7 @@ export interface StoreProtocol {
     ): Promise<UpdatableResponse<boolean>>;
     addTestCase(
       id: string,
-      testCaseId: string,
+      testCaseId: string | string[],
       headers?: HeadersInit
     ): Promise<UpdatableResponse<boolean>>;
   };

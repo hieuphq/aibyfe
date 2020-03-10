@@ -101,6 +101,7 @@ declare module 'react-query' {
   export interface MutationOptions {
     refetchQueries?: Array<string | [string, object]>;
     refetchQueriesOnFailure?: boolean;
+    onSuccess?: () => void;
   }
 
   export type MutateFunction<TResults, TVariables extends object> = (
@@ -156,4 +157,19 @@ declare module 'react-query' {
   }
 
   export function clearQueryCache(): void;
+
+  export interface QueryFetchingData {
+    queryHash: string;
+    queryKey: string[];
+  }
+  export interface QueryCache {
+    queries: Record<string, QueryFetchingData>;
+    isFetching: number;
+    refetchQueries: (
+      predicate: string | string[],
+      options?: { exact: boolean; throwOnError: boolean; force: boolean }
+    ) => void;
+  }
+
+  export const queryCache: QueryCache;
 }

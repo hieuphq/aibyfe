@@ -96,7 +96,6 @@ function generateAppData(): AppRawData {
     pages = [...pages, ...pUIs];
   }
 
-  console.log('testsuite connection', tstc);
   return {
     users: { data: [...us], nextIndex: us.length },
     projects: { data: [...projs], nextIndex: projs.length },

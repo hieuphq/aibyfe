@@ -30,7 +30,6 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
         return;
       }
       const testsuite = this.preload(itm[0]);
-      console.log(testsuite);
       resolve({ data: testsuite });
     });
   }
@@ -123,7 +122,6 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
 
       for (let idx = 0; idx < existed.length; idx++) {
         const itm = existed[idx];
-        console.log(itm);
         appData.testSuiteConnection.remove(itm.id);
       }
 
@@ -134,7 +132,7 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
 
   addTestCase(
     testSuiteId: string,
-    testCaseId: string
+    testCaseId: string | string[]
   ): Promise<UpdatableResponse<boolean>> {
     return new Promise<UpdatableResponse<boolean>>((resolve, reject) => {
       const appData = DataFactory.getInstance().appData();
@@ -144,7 +142,18 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
         return;
       }
       console.log(appData.testSuiteConnection);
-      appData.testSuiteConnection.add({ id: '', testCaseId, testSuiteId });
+
+      if (Array.isArray(testCaseId)) {
+        for (let idx in testCaseId) {
+          appData.testSuiteConnection.add({
+            id: '',
+            testCaseId: testCaseId[idx],
+            testSuiteId
+          });
+        }
+      } else {
+        appData.testSuiteConnection.add({ id: '', testCaseId, testSuiteId });
+      }
       console.log(appData.testSuiteConnection);
 
       DataFactory.getInstance().setAppData(appData);
