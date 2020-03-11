@@ -1,5 +1,5 @@
 import { IUpdatableStore } from '../type';
-import { Page, UpdatableListResponse, UpdatableResponse } from '@types';
+import { Page, UpdatableListResponse, UpdatableResponse } from 'types';
 import { DataFactory } from 'generator';
 
 export default class FakePageStore implements IUpdatableStore<Page> {
@@ -33,7 +33,14 @@ export default class FakePageStore implements IUpdatableStore<Page> {
     });
   }
   preload(dt: Page): Page {
-    return dt;
+    const appData = DataFactory.getInstance().appData();
+    const actionIds = appData.pageActions
+      .list(itm => itm.pageId === dt.id)
+      .map(itm => itm.actionId);
+    const actions = appData.actions.list(itm =>
+      actionIds.some(jtm => jtm === itm.id)
+    );
+    return { ...dt, actions };
   }
   create(data: Partial<Page>): Promise<UpdatableResponse<Page>> {
     return new Promise<UpdatableResponse<Page>>((resolve, reject) => {

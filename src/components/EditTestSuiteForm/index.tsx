@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Checkbox, Button, Row, Table, Card } from 'antd';
-import { TestCase } from '@types';
+import { Form, Input, Button, Card } from 'antd';
+import { TestCase } from 'types';
 
 export interface EditTestSuiteFormProps {
   submit(values: { name: string; testCases: string[] }): void;
@@ -118,11 +118,6 @@ const EditTestSuiteForm: React.FC<EditTestSuiteFormProps> = ({
             );
           }}
         </Form.List>
-        {/* <Table
-          rowSelection={rowSelection}
-          dataSource={tcView}
-          columns={columns}
-        ></Table> */}
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit">

@@ -1,5 +1,5 @@
 import { IUpdatableStore } from '../type';
-import { Page, UpdatableListResponse, UpdatableResponse } from '@types';
+import { Page, UpdatableListResponse, UpdatableResponse } from 'types';
 import { post, put, get, remove } from 'util/fetch';
 import { Endpoints } from 'constant/endpoint';
 

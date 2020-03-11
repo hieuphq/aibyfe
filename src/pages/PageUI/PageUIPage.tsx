@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppContext } from 'context/AppContext';
 import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { Page } from '@types';
+import { Page } from 'types';
 import { Button, Table } from 'antd';
 import { navigate, Link } from '@reach/router';
 import { ROUTES } from 'constant/routes';

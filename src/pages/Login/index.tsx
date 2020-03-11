@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAppContext } from 'context/AppContext';
 import { RouteComponentProps, Redirect } from '@reach/router';
 import Layout from 'components/LoginLayout';

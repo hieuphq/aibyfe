@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { Card, Descriptions, Divider, Table, Button } from 'antd';
+import { Card, Descriptions, Divider, Table } from 'antd';
 import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestCase, Step } from '@types';
+import { TestCase } from 'types';
+import { Step } from 'types/step';
 import styled from 'styled-components';
-import { AddTestCase } from 'components/AddTestCase';
 import { useAppContext } from 'context/AppContext';
 
 const TitleHeader = styled.div`

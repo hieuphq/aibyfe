@@ -3,7 +3,7 @@ import { RouteComponentProps, navigate, Link } from '@reach/router';
 import { Table, Button } from 'antd';
 import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestCase } from '@types';
+import { TestCase } from 'types';
 import { ROUTES } from 'constant/routes';
 import { useAppContext } from 'context/AppContext';
 import { PlusOutlined } from '@ant-design/icons';

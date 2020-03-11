@@ -47,15 +47,15 @@ export interface Project {
   id: string;
   name: string;
   ownerId: string;
-  createdAt: date;
-  updatedAt: date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface TestSuite {
   id: string;
   name: string;
   projectId?: string;
-  createdAt: date;
-  updatedAt: date;
+  createdAt: Date;
+  updatedAt: Date;
   testCases?: TestCase[];
 }
 
@@ -71,8 +71,8 @@ export interface TestCase {
   sort: number;
   projectId: string;
   steps?: Step[];
-  createdAt: date;
-  updatedAt: date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TestCaseForTestSuite {
@@ -80,23 +80,14 @@ export interface TestCaseForTestSuite {
   selectedTestcases: TestCase[];
 }
 
-export interface Step {
-  id: string;
-  name: string;
-  testCaseId: string;
-  sort: number;
-  type: string;
-  createdAt: date;
-  updatedAt: date;
-}
-
 export interface Page {
   id: string;
   name: string;
   projectId: string;
   sort: number;
-  createdAt: date;
-  updatedAt: date;
+  actions?: Action[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreatePage {
@@ -108,8 +99,8 @@ export interface TestcasePage {
   id: string;
   testCaseId: string;
   pageId: string;
-  createdAt: date;
-  updatedAt: date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface UpdatableListResponse<T> {
@@ -122,7 +113,7 @@ export interface UpdatableResponse<T> {
   error?: string | null;
 }
 
-interface TestSuiteTestCaseConnect {
+export interface TestSuiteTestCaseConnect {
   id: string;
   testCaseId: string;
   testSuiteId: string;

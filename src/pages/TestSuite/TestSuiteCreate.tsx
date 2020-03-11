@@ -4,7 +4,7 @@ import { useAppContext } from 'context/AppContext';
 import EditTestSuiteForm from 'components/EditTestSuiteForm';
 import { useQuery } from 'react-query';
 import { repo } from 'api';
-import { TestCase } from '@types';
+import { TestCase } from 'types';
 import { navigate } from '@reach/router';
 import { ROUTES } from 'constant/routes';
 

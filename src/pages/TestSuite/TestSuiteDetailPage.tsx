@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Card, Descriptions, Divider, Table, Button } from 'antd';
 import { useQuery, useMutation, queryCache } from 'react-query';
 
 import { repo } from 'api';
-import { TestCase, TestSuite } from '@types';
+import { TestCase, TestSuite } from 'types';
 import styled from 'styled-components';
 import { AddTestCase } from 'components/AddTestCase';
 import { useAppContext } from 'context/AppContext';
@@ -35,19 +35,16 @@ export const TestSuiteDetailPage = ({
     []
   );
 
-  const { data, refetch } = useQuery(getTestSuiteQueryKey, () => {
+  const { data } = useQuery(getTestSuiteQueryKey, () => {
     return repo.getTestSuite(testSuiteId || '');
   });
 
-  const { data: testCasesRaw, refetch: refetchAddingData } = useQuery(
-    getTestCaseAddingQueryKey,
-    () => {
-      return repo.getTestCasesForAddingFlow(
-        getProjectId() || '',
-        testSuiteId || ''
-      );
-    }
-  );
+  const { data: testCasesRaw } = useQuery(getTestCaseAddingQueryKey, () => {
+    return repo.getTestCasesForAddingFlow(
+      getProjectId() || '',
+      testSuiteId || ''
+    );
+  });
 
   const [removeTestcase] = useMutation(
     (values: { testSuiteId: string; testCaseId: string }) => {

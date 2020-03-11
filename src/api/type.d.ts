@@ -4,7 +4,7 @@ import {
   UpdatableResponse,
   TestSuite,
   TestCase
-} from '@types';
+} from 'types';
 export interface IAuthStore {
   login(email: string, password: string): Promise<AuthResponse>;
 
@@ -22,10 +22,7 @@ export interface IUpdatableStore<T> {
   ): Promise<UpdatableListResponse<T>>;
   get(id: string, headers?: HeadersInit): Promise<UpdatableResponse<T>>;
   create(data: any, headers?: HeadersInit): Promise<UpdatableResponse<T>>;
-  update(
-    data: Partial<T>,
-    headers?: HeadersInit
-  ): Promise<UpdatableResponse<T>>;
+  update(data: any, headers?: HeadersInit): Promise<UpdatableResponse<T>>;
   delete(
     id: string,
     headers?: HeadersInit
@@ -54,4 +51,5 @@ export interface StoreProtocol {
   };
   projects: IUpdatableStore<Project> & {};
   pages: IUpdatableStore<Page> & {};
+  actions: IUpdatableStore<Action> & {};
 }

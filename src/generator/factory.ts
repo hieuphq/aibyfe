@@ -6,7 +6,7 @@ import {
   User,
   UserProject,
   Page
-} from '@types';
+} from 'types';
 import faker from 'faker';
 import * as Factory from 'factory.ts';
 

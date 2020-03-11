@@ -1,9 +1,10 @@
 export const Endpoints = {
-  LOGIN: '/api/auth',
-  SIGNUP: '/api/signup',
-  TEST_SUITE: '/api/test-suites',
-  USER: '/api/users',
-  TEST_CASE: '/api/test-cases',
-  PROJECT: '/api/projects',
-  PAGE: '/api/pages'
+  LOGIN: '/auth',
+  SIGNUP: '/signup',
+  TEST_SUITE: '/test-suites',
+  USER: '/users',
+  TEST_CASE: '/test-cases',
+  PROJECT: '/projects',
+  PAGE: '/pages',
+  ACTION: '/actions'
 };

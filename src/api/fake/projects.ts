@@ -1,5 +1,5 @@
 import { IUpdatableStore } from '../type';
-import { Project, UpdatableListResponse, UpdatableResponse } from '@types';
+import { Project, UpdatableListResponse, UpdatableResponse } from 'types';
 import { DataFactory } from 'generator';
 import { decodeToken } from './token';
 

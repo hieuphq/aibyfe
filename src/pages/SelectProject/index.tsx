@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps, Redirect, navigate } from '@reach/router';
 import { useAppContext } from 'context/AppContext';
 import { ROUTES } from 'constant/routes';
 import Layout from 'components/LoginLayout';
-import { Card, Select, Button, Divider, Row, message } from 'antd';
+import { Card, Select, message } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import { repo } from 'api';
 import { useQuery } from 'react-query';
-import { Project } from '@types';
+import { Project } from 'types';
 
 const { Option } = Select;
 

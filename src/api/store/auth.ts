@@ -1,4 +1,4 @@
-import { AuthResponse } from '@types';
+import { AuthResponse } from 'types';
 import { IAuthStore } from '../type';
 import { Endpoints } from 'constant/endpoint';
 import { post } from 'util/fetch';

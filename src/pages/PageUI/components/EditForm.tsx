@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Checkbox, Button, Row, Table } from 'antd';
-import { TestCase } from '@types';
+import React from 'react';
+import { Form, Input, Button } from 'antd';
 
 export interface EditFormProps {
   submit(values: { name: string }): void;

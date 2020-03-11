@@ -1,5 +1,5 @@
 import { IAuthStore } from '../type';
-import { AuthResponse } from '@types';
+import { AuthResponse } from 'types';
 import { DataFactory } from 'generator';
 import { generateToken } from './token';
 

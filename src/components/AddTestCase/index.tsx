@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TestCase } from '@types';
-import { repo } from 'api';
-import { Modal, Table, Checkbox, Input } from 'antd';
+import { TestCase } from 'types';
+import { Modal, Table, Input } from 'antd';
 
 const { Search } = Input;
 
@@ -69,28 +68,28 @@ export const AddTestCase = ({
     onOk({ willSelect, selected });
   };
 
-  const updateCheckStateHandler = (id: string) => {
-    const newState = [...tcView];
-    const idx = newState.findIndex(itm => itm.id === id);
-    if (idx < 0) {
-      return;
-    }
+  // const updateCheckStateHandler = (id: string) => {
+  //   const newState = [...tcView];
+  //   const idx = newState.findIndex(itm => itm.id === id);
+  //   if (idx < 0) {
+  //     return;
+  //   }
 
-    let newRowState = newState[idx].state;
-    switch (newState[idx].state) {
-      case 'selected':
-        newRowState = 'selected';
-        break;
-      case 'normal':
-        newRowState = 'selecting';
-        break;
-      case 'selecting':
-        newRowState = 'normal';
-        break;
-    }
-    newState[idx].state = newRowState;
-    setTcView(newState);
-  };
+  //   let newRowState = newState[idx].state;
+  //   switch (newState[idx].state) {
+  //     case 'selected':
+  //       newRowState = 'selected';
+  //       break;
+  //     case 'normal':
+  //       newRowState = 'selecting';
+  //       break;
+  //     case 'selecting':
+  //       newRowState = 'normal';
+  //       break;
+  //   }
+  //   newState[idx].state = newRowState;
+  //   setTcView(newState);
+  // };
   const columns = [
     {
       title: 'ID',

@@ -1,5 +1,5 @@
 import { IUpdatableStore } from '../type';
-import { TestCase, UpdatableListResponse, UpdatableResponse } from '@types';
+import { TestCase, UpdatableListResponse, UpdatableResponse } from 'types';
 import { DataFactory } from 'generator';
 
 export default class FakeTestCaseStore implements IUpdatableStore<TestCase> {

@@ -7,9 +7,11 @@ import {
   User,
   Page,
   TestcasePage
-} from '@types';
+} from 'types';
 import { IEntity as Entity, List } from './list';
 import * as Factory from './factory';
+import { Action, ActionsSteps, PagesActions } from 'types/action';
+import { Step } from 'types/step';
 
 interface ListData<T> {
   data: T[];
@@ -25,6 +27,10 @@ interface AppRawData {
   projectConnection: ListData<UserProject>;
   pages: ListData<Page>;
   pageConnection: ListData<TestcasePage>;
+  pageActions: ListData<PagesActions>;
+  actions: ListData<Action>;
+  actionSteps: ListData<ActionsSteps>;
+  steps: ListData<Step>;
 }
 export interface AppData {
   users: List<User>;
@@ -35,6 +41,10 @@ export interface AppData {
   projectConnection: List<UserProject>;
   pages: List<Page>;
   pageConnection: List<TestcasePage>;
+  pageActions: List<PagesActions>;
+  actions: List<Action>;
+  actionSteps: List<ActionsSteps>;
+  steps: List<Step>;
 }
 
 const numOfUser = 1;
@@ -104,7 +114,11 @@ function generateAppData(): AppRawData {
     testSuiteConnection: { data: [...tstc], nextIndex: tstc.length },
     projectConnection: { data: [...up], nextIndex: up.length },
     pages: { data: [...pages], nextIndex: pages.length },
-    pageConnection: { data: [], nextIndex: 0 }
+    pageConnection: { data: [], nextIndex: 0 },
+    pageActions: { data: [], nextIndex: 0 },
+    actions: { data: [], nextIndex: 0 },
+    actionSteps: { data: [], nextIndex: 0 },
+    steps: { data: [], nextIndex: 0 }
   };
 }
 
@@ -144,10 +158,25 @@ function updateLocalStorage(appData: AppData) {
       data: [...appData.pages.list()],
       nextIndex: appData.pages.getNextID()
     },
-
     pageConnection: {
       data: [...appData.pageConnection.list()],
       nextIndex: appData.pageConnection.getNextID()
+    },
+    pageActions: {
+      data: [...appData.pageActions.list()],
+      nextIndex: appData.pageActions.getNextID()
+    },
+    actions: {
+      data: [...appData.actions.list()],
+      nextIndex: appData.actions.getNextID()
+    },
+    actionSteps: {
+      data: [...appData.actionSteps.list()],
+      nextIndex: appData.actionSteps.getNextID()
+    },
+    steps: {
+      data: [...appData.steps.list()],
+      nextIndex: appData.steps.getNextID()
     }
   };
   localStorage.setItem(SeedDataKey, JSON.stringify(rawData));
@@ -190,6 +219,19 @@ function generateSeedData(): AppData {
     pageConnection: new List<TestcasePage>(
       rawData.pageConnection.nextIndex,
       ...rawData.pageConnection.data
+    ),
+    actions: new List<Action>(
+      rawData.actions.nextIndex,
+      ...rawData.actions.data
+    ),
+    actionSteps: new List<ActionsSteps>(
+      rawData.actionSteps.nextIndex,
+      ...rawData.actionSteps.data
+    ),
+    steps: new List<Step>(rawData.actionSteps.nextIndex, ...rawData.steps.data),
+    pageActions: new List<PagesActions>(
+      rawData.pageActions.nextIndex,
+      ...rawData.pageActions.data
     )
   };
 }

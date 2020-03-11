@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout as AntLayout } from 'antd';
 import styled from 'styled-components';
 import { RouteComponentProps } from '@reach/router';
-import { User } from '@types';
+import { User } from 'types';
 
 const { Header, Content, Footer } = AntLayout;
 const ContentWraper = styled(AntLayout)`

@@ -10,8 +10,9 @@ import {
   Project,
   Page,
   CreatePage
-} from '@types';
+} from 'types';
 import { NewFakeStore } from './fake';
+import { CreateAction, Action, UpdateAction } from 'types/action';
 
 export class Repo {
   store: StoreProtocol;
@@ -135,6 +136,14 @@ export class Repo {
 
   createPage(data: CreatePage): Promise<UpdatableResponse<Page>> {
     return this.store.pages.create(data);
+  }
+
+  createAction(data: CreateAction): Promise<UpdatableResponse<Action>> {
+    return this.store.actions.create(data);
+  }
+
+  updateAction(data: UpdateAction): Promise<UpdatableResponse<Action>> {
+    return this.store.actions.update(data);
   }
 }
 

@@ -4,6 +4,7 @@ import FakeTestSuiteStore from './test-suites';
 import FakeTestCaseStore from './test-cases';
 import FakeProjectStore from './projects';
 import FakePageStore from './page';
+import FakeActionStore from './action';
 
 export function NewFakeStore(): StoreProtocol {
   return {
@@ -11,6 +12,7 @@ export function NewFakeStore(): StoreProtocol {
     testSuite: new FakeTestSuiteStore(),
     testCase: new FakeTestCaseStore(),
     projects: new FakeProjectStore(),
-    pages: new FakePageStore()
+    pages: new FakePageStore(),
+    actions: new FakeActionStore()
   };
 }

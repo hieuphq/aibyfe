@@ -5,7 +5,7 @@ import {
   UpdatableResponse,
   CreateTestSuite,
   TestCase
-} from '@types';
+} from 'types';
 import { DataFactory } from 'generator';
 
 export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
@@ -141,7 +141,6 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
         reject(new Error('invalid test suite'));
         return;
       }
-      console.log(appData.testSuiteConnection);
 
       if (Array.isArray(testCaseId)) {
         for (let idx in testCaseId) {
@@ -154,7 +153,6 @@ export default class FakeTestSuiteStore implements IUpdatableStore<TestSuite> {
       } else {
         appData.testSuiteConnection.add({ id: '', testCaseId, testSuiteId });
       }
-      console.log(appData.testSuiteConnection);
 
       DataFactory.getInstance().setAppData(appData);
       resolve({ data: true });

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import constate from 'constate';
-import { AppRootState } from '@types';
+import { AppRootState } from 'types';
 
 const TokenKey = 'token';
 const ProjectIdKey = 'projectId';

@@ -1,5 +1,5 @@
 import { IUpdatableStore } from '../type';
-import { TestSuite, UpdatableListResponse, UpdatableResponse } from '@types';
+import { TestSuite, UpdatableListResponse, UpdatableResponse } from 'types';
 import { post, put, get, remove } from 'util/fetch';
 import { Endpoints } from 'constant/endpoint';
 
